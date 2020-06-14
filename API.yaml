@@ -342,8 +342,18 @@ components:
         metaData:
           type: object
           properties:
-            id:
-              type: integer
+            prerequisites:
+              type: array
+              items:
+                type: string
+            postrequisites:
+              type: array
+              items:
+                type: string
+            output:
+              type: array
+              items:
+                type: string
           required:
             - id
         jobType:
