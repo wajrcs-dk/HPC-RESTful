@@ -49,15 +49,25 @@ paths:
                 - failed
                 - aborted
                 - completed
+        - name: pageLength
+          in: query
+          description: Number of records to return
+          schema:
+            type: number
+        - name: pageNumber
+          in: query
+          description: Start index for paging
+          schema:
+            type: number
       responses:
         '200':
           description: Successful operation
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Job'
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/PaginationResponse'
             application/xml:
               schema:
                 type: array
@@ -120,6 +130,52 @@ paths:
       security:
         - hpc_auth:
           - 'write:jobs'
+  /job/updateByOperation/{jobId}:
+    put:
+      tags:
+        - job
+      summary: Updates operation of an existing job
+      operationId: updateJobByOperation
+      parameters:
+        - name: jobId
+          in: path
+          description: name that need to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: operation
+          in: path
+          description: Job Operation
+          required: true
+          schema:
+            type: string
+            enum:
+              - queue
+              - abort
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Job'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Job not found
+        '405':
+          description: Validation exception
+        '409':
+          description: Job cannot be updated because of conflict with the current state of the resource
+        '401':
+          description: Unauthorized
+      security:
+        - hpc_auth:
+          - 'write:jobs'
   /job/{jobId}:
     get:
       tags:
@@ -162,29 +218,13 @@ paths:
       parameters:
         - name: jobId
           in: path
-          description: name that need to be updated
+          description: ID of job to return
           required: true
           schema:
             type: integer
             format: int64
-        - name: operation
-          in: path
-          description: Job Operation
-          required: true
-          schema:
-            type: string
-            enum:
-              - queue
-              - abort
-        - name: jobType
-          in: path
-          description: Type of the job
-          required: true
-          schema:
-            type: string
-            enum:
-              - hpc
-              - shell
+      requestBody:
+        $ref: '#/components/requestBodies/Job'
       responses:
         '200':
           description: Successful operation
@@ -275,6 +315,21 @@ externalDocs:
   url: 'http://swagger.io'
 components:
   schemas:
+    PaginationResponse:
+      type: object
+      properties:
+        totalPages:
+          type: number
+        currentPage:
+          type: number
+        pageLength:
+          type: number
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Job'
+      xml:
+        name: PaginationResponsedata
     User:
       type: object
       required:
