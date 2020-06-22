@@ -52,13 +52,23 @@ paths:
         - name: pageLength
           in: query
           description: Number of records to return
+          required: true
           schema:
-            type: number
+            type: integer
+            format: int64
         - name: pageNumber
           in: query
           description: Start index for paging
+          required: true
           schema:
-            type: number
+            type: integer
+            format: int64
+        - name: accessToken
+          in: query
+          description: Access token
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Successful operation
@@ -111,6 +121,12 @@ paths:
             enum:
               - hpc
               - shell
+        - name: accessToken
+          in: query
+          description: Access token
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Successful operation
@@ -148,6 +164,12 @@ paths:
             enum:
               - queue
               - abort
+        - name: accessToken
+          in: query
+          description: Access token
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Successful operation
@@ -183,6 +205,12 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: accessToken
+          in: query
+          description: Access token
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Successful operation
@@ -212,6 +240,12 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: accessToken
+          in: query
+          description: Access token
+          required: true
+          schema:
+            type: string
       requestBody:
         $ref: '#/components/requestBodies/Job'
       responses:
@@ -247,6 +281,12 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: accessToken
+          in: query
+          description: Access token
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Successful operation
