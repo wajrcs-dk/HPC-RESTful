@@ -77,9 +77,6 @@ paths:
           description: Invalid status value
         '401':
           description: Unauthorized
-      security:
-        - hpc_auth:
-            - 'read:jobs'
   /job:
     post:
       tags:
@@ -128,9 +125,6 @@ paths:
           description: Invalid input
         '401':
           description: Unauthorized
-      security:
-        - hpc_auth:
-          - 'write:jobs'
   /job/updateByOperation/{jobId}:
     put:
       tags:
@@ -174,9 +168,6 @@ paths:
           description: Job cannot be updated because of conflict with the current state of the resource
         '401':
           description: Unauthorized
-      security:
-        - hpc_auth:
-          - 'write:jobs'
   /job/{jobId}:
     get:
       tags:
@@ -208,9 +199,6 @@ paths:
           description: Job not found
         '401':
           description: Unauthorized
-      security:
-        - hpc_auth:
-          - read:jobs
     put:
       tags:
         - job
@@ -246,9 +234,6 @@ paths:
           description: Job cannot be updated because of conflict with the current state of the resource
         '401':
           description: Unauthorized
-      security:
-        - hpc_auth:
-          - 'write:jobs'
     delete:
       tags:
         - job
@@ -273,9 +258,6 @@ paths:
           description: Job cannot be deleted because of conflict with the current state of the resource
         '401':
           description: Unauthorized
-      security:
-        - hpc_auth:
-          - 'write:jobs'
   /user/login:
     get:
       tags:
@@ -453,12 +435,3 @@ components:
             $ref: '#/components/schemas/Job'
       description: Job object that needs to be added
       required: true
-  securitySchemes:
-    hpc_auth:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: 'http://HPC-RESTful.swagger.io/oauth/dialog'
-          scopes:
-            'write:jobs': Modify and create jobs
-            'read:jobs': Read jobs
