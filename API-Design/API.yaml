@@ -45,9 +45,12 @@ paths:
               type: string
               enum:
                 - new
-                - in_progress
-                - failed
-                - aborted
+                - cronjob_in_progress
+                - hpc_queued
+                - hpc_in_progress
+                - cronjob_failed
+                - hpc_failed
+                - hpc_aborted
                 - completed
         - name: pageLength
           in: query
