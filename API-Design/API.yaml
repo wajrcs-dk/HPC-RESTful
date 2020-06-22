@@ -27,7 +27,7 @@ tags:
       description: Find out more about our store
       url: http://swagger.io
 paths:
-  /job:
+  /job/findJobsByStatus:
     get:
       tags:
         - job
@@ -80,6 +80,7 @@ paths:
       security:
         - hpc_auth:
             - 'read:jobs'
+  /job:
     post:
       tags:
         - job
@@ -98,12 +99,12 @@ paths:
           required: true
           schema:
             type: string
-        - name: metaData
+        - name: jobMetaData
           in: path
           description: Metadata of the job
           required: true
           schema:
-            type: object
+            $ref: '#/components/schemas/JobMetadata'
         - name: jobType
           in: path
           description: Type of the job
@@ -315,6 +316,25 @@ externalDocs:
   url: 'http://swagger.io'
 components:
   schemas:
+    JobMetadata:
+      type: object
+      properties:
+        prerequisites:
+          type: array
+          items:
+            type: string
+        postrequisites:
+          type: array
+          items:
+            type: string
+        output:
+          type: array
+          items:
+            type: string
+      required:
+        - prerequisites
+        - postrequisites
+        - output
     PaginationResponse:
       type: object
       properties:
@@ -339,7 +359,7 @@ components:
         - email
         - password
       properties:
-        id:
+        userId:
           type: integer
           format: int64
         username:
@@ -370,7 +390,7 @@ components:
         - command
         - userId
       properties:
-        id:
+        jobId:
           type: integer
           format: int64
         hpcJobId:
@@ -390,23 +410,8 @@ components:
           type: string
         command:
           type: string
-        metaData:
-          type: object
-          properties:
-            prerequisites:
-              type: array
-              items:
-                type: string
-            postrequisites:
-              type: array
-              items:
-                type: string
-            output:
-              type: array
-              items:
-                type: string
-          required:
-            - id
+        jobMetaData:
+          $ref: '#/components/schemas/JobMetadata'
         jobType:
           type: string
           description: Job Type
