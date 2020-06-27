@@ -97,39 +97,14 @@ paths:
       summary: Schedules a new job to the HPC system
       operationId: addJob
       parameters:
-        - name: name
-          in: path
-          description: Name of the job
-          required: true
-          schema:
-            type: string
-        - name: command
-          in: path
-          description: Command of the job
-          required: true
-          schema:
-            type: string
-        - name: jobMetaData
-          in: path
-          description: Metadata of the job
-          required: true
-          schema:
-            $ref: '#/components/schemas/JobMetadata'
-        - name: jobType
-          in: path
-          description: Type of the job
-          required: true
-          schema:
-            type: string
-            enum:
-              - hpc
-              - shell
         - name: accessToken
           in: query
           description: Access token
           required: true
           schema:
             type: string
+      requestBody:
+        $ref: '#/components/requestBodies/Job'
       responses:
         '200':
           description: Successful operation
@@ -159,7 +134,7 @@ paths:
             type: integer
             format: int64
         - name: operation
-          in: path
+          in: query
           description: Job Operation
           required: true
           schema:
