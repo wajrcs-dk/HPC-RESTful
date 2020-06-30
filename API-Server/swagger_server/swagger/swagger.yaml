@@ -1,0 +1,542 @@
+openapi: 3.0.0
+info:
+  title: HPC RESTful API using Slurm
+  description: |
+    Design and implementation of an API to ease the use of HPC systems.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: Waqar Alamgir
+    email: wajrcs@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+- url: https://virtserver.swaggerhub.com/Master-Thesis/HPC-RESTful/1.0.0
+  description: HPC RESTful API using Slurm
+- url: https://HPC-RESTful.swagger.io/v2
+tags:
+- name: job
+  description: Everything about HPC jobs
+  externalDocs:
+    description: Find out more
+    url: http://swagger.io
+- name: user
+  description: Operations about users
+  externalDocs:
+    description: Find out more about our store
+    url: http://swagger.io
+paths:
+  /job/findJobsByStatus:
+    get:
+      tags:
+      - job
+      summary: Finds jobs, optionally by status
+      description: Multiple status values can be provided with comma separated strings
+      operationId: find_jobs_by_status
+      parameters:
+      - name: status
+        in: query
+        description: Status values that need to be considered for filter
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - new
+            - cronjob_in_progress
+            - hpc_queued
+            - hpc_in_progress
+            - cronjob_failed
+            - hpc_failed
+            - hpc_aborted
+            - completed
+      - name: pageLength
+        in: query
+        description: Number of records to return
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: pageNumber
+        in: query
+        description: Start index for paging
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int64
+      - name: accessToken
+        in: query
+        description: Access token
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                - $ref: '#/components/schemas/PaginationResponse'
+                x-content-type: application/json
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Job'
+        "400":
+          description: Invalid status value
+        "401":
+          description: Unauthorized
+      x-openapi-router-controller: swagger_server.controllers.job_controller
+  /job:
+    post:
+      tags:
+      - job
+      summary: Schedules a new job to the HPC system
+      operationId: add_job
+      parameters:
+      - name: accessToken
+        in: query
+        description: Access token
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/Job'
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Job'
+        "401":
+          description: Unauthorized
+        "405":
+          description: Invalid input
+      x-openapi-router-controller: swagger_server.controllers.job_controller
+  /job/updateByOperation/{jobId}:
+    put:
+      tags:
+      - job
+      summary: Updates operation of an existing job
+      operationId: update_job_by_operation
+      parameters:
+      - name: jobId
+        in: path
+        description: name that need to be updated
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: operation
+        in: query
+        description: Job Operation
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - queue
+          - abort
+      - name: accessToken
+        in: query
+        description: Access token
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Job'
+        "400":
+          description: Invalid ID supplied
+        "401":
+          description: Unauthorized
+        "404":
+          description: Job not found
+        "405":
+          description: Validation exception
+        "409":
+          description: Job cannot be updated because of conflict with the current
+            state of the resource
+      x-openapi-router-controller: swagger_server.controllers.job_controller
+  /job/{jobId}:
+    get:
+      tags:
+      - job
+      summary: Finds job by ID
+      description: Returns a single job
+      operationId: get_job_by_id
+      parameters:
+      - name: jobId
+        in: path
+        description: ID of job to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: accessToken
+        in: query
+        description: Access token
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Job'
+        "400":
+          description: Invalid ID supplied
+        "401":
+          description: Unauthorized
+        "404":
+          description: Job not found
+      x-openapi-router-controller: swagger_server.controllers.job_controller
+    put:
+      tags:
+      - job
+      summary: Updates an existing job
+      operationId: update_job
+      parameters:
+      - name: jobId
+        in: path
+        description: ID of job to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: accessToken
+        in: query
+        description: Access token
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/Job'
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Job'
+        "400":
+          description: Invalid ID supplied
+        "401":
+          description: Unauthorized
+        "404":
+          description: Job not found
+        "405":
+          description: Validation exception
+        "409":
+          description: Job cannot be updated because of conflict with the current
+            state of the resource
+      x-openapi-router-controller: swagger_server.controllers.job_controller
+    delete:
+      tags:
+      - job
+      summary: Deletes an existing job
+      operationId: delete_job
+      parameters:
+      - name: jobId
+        in: path
+        description: Job id to delete
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: accessToken
+        in: query
+        description: Access token
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful operation
+        "400":
+          description: Invalid ID supplied
+        "401":
+          description: Unauthorized
+        "404":
+          description: Job not found
+        "409":
+          description: Job cannot be deleted because of conflict with the current
+            state of the resource
+      x-openapi-router-controller: swagger_server.controllers.job_controller
+  /user/login:
+    get:
+      tags:
+      - user
+      summary: Logs user into the system
+      operationId: login_user
+      parameters:
+      - name: username
+        in: query
+        description: The user name for login
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        description: The password for login in clear text
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+                x-content-type: application/json
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        "400":
+          description: Invalid username/password supplied
+      x-openapi-router-controller: swagger_server.controllers.user_controller
+components:
+  schemas:
+    JobMetadata:
+      required:
+      - output
+      - postrequisites
+      - prerequisites
+      type: object
+      properties:
+        prerequisites:
+          type: array
+          items:
+            type: string
+        postrequisites:
+          type: array
+          items:
+            type: string
+        output:
+          type: array
+          items:
+            type: string
+      example:
+        prerequisites:
+        - prerequisites
+        - prerequisites
+        output:
+        - output
+        - output
+        postrequisites:
+        - postrequisites
+        - postrequisites
+    PaginationResponse:
+      type: object
+      properties:
+        totalPages:
+          type: number
+        currentPage:
+          type: number
+        pageLength:
+          type: number
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Job'
+      xml:
+        name: PaginationResponsedata
+    User:
+      required:
+      - email
+      - firstName
+      - lastName
+      - password
+      - username
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        token:
+          type: string
+        userStatus:
+          type: string
+          description: User Status
+          enum:
+          - active
+          - inactive
+          - blocked
+      example:
+        firstName: firstName
+        lastName: lastName
+        password: password
+        userStatus: active
+        userId: 0
+        email: email
+        username: username
+        token: token
+      xml:
+        name: User
+    Job:
+      required:
+      - command
+      - name
+      - userId
+      type: object
+      properties:
+        jobId:
+          type: integer
+          format: int64
+        hpcJobId:
+          type: integer
+          format: int64
+        operation:
+          type: string
+          description: Job Operation
+          enum:
+          - queue
+          - abort
+        userId:
+          type: integer
+          description: User Id or GWDG account number
+          format: int64
+        name:
+          type: string
+        command:
+          type: string
+        jobMetaData:
+          $ref: '#/components/schemas/JobMetadata'
+        jobType:
+          type: string
+          description: Job Type
+          enum:
+          - hpc
+          - shell
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        result:
+          type: string
+        log:
+          type: string
+        status:
+          type: string
+          description: Job Status
+          enum:
+          - new
+          - cronjob_in_progress
+          - hpc_queued
+          - hpc_in_progress
+          - cronjob_failed
+          - hpc_failed
+          - hpc_aborted
+          - completed
+      example:
+        log: log
+        created: 2000-01-23T04:56:07.000+00:00
+        userId: 1
+        command: command
+        result: result
+        jobId: 0
+        hpcJobId: 6
+        name: name
+        jobMetaData:
+          prerequisites:
+          - prerequisites
+          - prerequisites
+          output:
+          - output
+          - output
+          postrequisites:
+          - postrequisites
+          - postrequisites
+        jobType: hpc
+        operation: queue
+        updated: 2000-01-23T04:56:07.000+00:00
+        status: new
+      xml:
+        name: Job
+  requestBodies:
+    Job:
+      description: Job object that needs to be added
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Job'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/Job'
+      required: true
+
