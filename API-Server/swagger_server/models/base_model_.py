@@ -8,7 +8,7 @@ from swagger_server import util
 import mysql.connector
 
 mydb = mysql.connector.connect(
-    host="127.0.0.1",
+    host="localhost",
     user="root",
     password="pass",
     database="hpc_api",

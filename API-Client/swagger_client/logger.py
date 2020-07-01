@@ -1,10 +1,12 @@
+import time
 
 def log_open():
 	return open("swagger_logs/cronjob.log","w+")
 
 def log(f, str):
-	print (str)
-	f.write(str+"\n")
+	msg = time.strftime('%Y-%m-%d %H:%M:%S') + ": "+ str
+	print (msg)
+	f.write(msg+"\n")
 
 def log_close(f):
 	f.close()

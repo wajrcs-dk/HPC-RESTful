@@ -17,9 +17,8 @@ class Api:
         return r.json()
 
     def put(url, data):
-        # sending get request and saving the response as response object 
-        r = requests.put(url = url, data = data)
-
+        # sending get request and saving the response as response object
+        r = requests.put(url = url, json = data)
         # extracting data in json format 
         return r.json()
 

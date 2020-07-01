@@ -99,17 +99,17 @@ My: 867826
 
 
 {
-  "name": "string",
-  "command": "string",
+  "name": "Zip Archive v1",
+  "command": "zip ~wajrcs/readme-cmd.zip ~wajrcs/README.md",
   "jobMetaData": {
     "prerequisites": [
-      "string"
+      "zip ~wajrcs/readme-pre.zip ~wajrcs/README.md"
     ],
     "postrequisites": [
-      "string"
+      "zip ~wajrcs/readme-post.zip ~wajrcs/README.md"
     ],
     "output": [
-      "string"
+      "ls ~wajrcs/ | grep '.zip'"
     ]
   },
   "jobType": "hpc"
