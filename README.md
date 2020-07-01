@@ -170,3 +170,46 @@ completed
 hpc_failed
 cronjob_failed
 hpc_aborted
+
+
+
+--- Docker SLurm Cluster
+
+docker-compose up -d
+./register_cluster.sh
+
+docker-compose start
+docker-compose stop
+
+docker exec -it slurmctld bash
+
+sinfo
+
+cd /data/
+
+sbatch --wrap="uptime"
+
+slurm-2.out
+
+
+
+------
+
+
+root@wajrcs-Inspiron-5547:/media/wajrcs/01D5823629664230/studies/thesis/work/slurm-docker# docker-compose start
+Starting mysql     ... done
+Starting slurmdbd  ... done
+Starting slurmctld ... done
+Starting c1        ... done
+Starting c2        ... done
+root@wajrcs-Inspiron-5547:/media/wajrcs/01D5823629664230/studies/thesis/work/slurm-docker# docker exec -it slurmctld bash
+[root@slurmctld /]# sinfo
+PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST 
+normal*      up 5-00:00:00      2   idle c[1-2] 
+[root@slurmctld /]# cd /data/
+[root@slurmctld data]# sbatch --wrap="uptime"
+Submitted batch job 4
+[root@slurmctld data]# cat slurm-4.out 
+ 12:53:15 up 13:02,  0 users,  load average: 1.14, 0.93, 0.67
+
+

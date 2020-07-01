@@ -45,8 +45,21 @@ class Job:
             logger.log(f, 'Job ' + str(job['jobId']) + ' completed prerequisites')
             
             logger.log(f, 'Job ' + str(job['jobId']) + ' running command')
-            self.execute_cmd(job, job['command'], logger, f)
-            logger.log(f, 'Job ' + str(job['jobId']) + ' completed command')
+                
+            if (job['command'].find('sbatch') == -1):
+                self.execute_cmd(job, job['command'], logger, f)
+                logger.log(f, 'Job ' + str(job['jobId']) + ' completed command')
+            else:
+                cmd_output = self.execute_cmd(job, job['command'], logger, f)
+                logger.log(f, 'Job ' + str(job['jobId']) + ' completed command')
+
+                logger.log(f, 'Job ' + str(job['jobId']) + ' updating hpc jobId')
+                job['hpcJobId'] = int(cmd_output.replace("Submitted batch job", "").strip())
+                now = time.strftime('%Y-%m-%d %H:%M:%S')
+                job['created'] = now
+                job['updated'] = now
+                self.update_job(job['jobId'], access_token, job)
+                logger.log(f, 'Job ' + str(job['jobId']) + ' updated updated hpc jobId')
 
             logger.log(f, 'Job ' + str(job['jobId']) + ' updating status to hpc_queued')
             job['status'] = 'hpc_queued'

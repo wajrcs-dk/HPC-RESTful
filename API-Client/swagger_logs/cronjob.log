@@ -1,2 +1,135 @@
-2020-07-01 14:37:41: Getting jobs for page 1
-2020-07-01 14:37:41: Found jobs with page 1
+2020-07-01 15:21:34: Getting jobs for page 1
+2020-07-01 15:21:34: Processing jobs with page 1
+2020-07-01 15:21:34: No job found
+2020-07-01 15:22:17: Getting jobs for page 1
+2020-07-01 15:22:17: Processing jobs with page 1
+2020-07-01 15:22:17: No job found
+2020-07-01 15:23:21: Getting jobs for page 1
+2020-07-01 15:23:21: Processing jobs with page 1
+2020-07-01 15:23:21: No job found
+2020-07-01 15:23:40: Getting jobs for page 1
+2020-07-01 15:23:40: Processing jobs with page 1
+2020-07-01 15:23:40: No job found
+2020-07-01 15:24:42: Getting jobs for page 1
+2020-07-01 15:24:42: Processing jobs with page 1
+2020-07-01 15:24:42: No job found
+2020-07-01 15:27:41: Getting jobs for page: 1 total pages:1
+2020-07-01 15:27:41: Processing jobs with page 1
+2020-07-01 15:27:41: No job found
+2020-07-01 15:27:41: Processed jobs with page 1
+2020-07-01 15:28:42: Getting jobs for page: 1 total pages:1
+2020-07-01 15:28:42: Processing jobs with page 1
+2020-07-01 15:28:42: No job found
+2020-07-01 15:28:42: Processed jobs with page 1
+2020-07-01 15:30:40: Getting jobs for page: 1 total pages:1
+2020-07-01 15:30:40: Processing jobs with page 1
+2020-07-01 15:30:40: No job found
+2020-07-01 15:30:40: Processed jobs with page 1
+2020-07-01 15:30:42: Getting jobs for page: 1 total pages:1
+2020-07-01 15:30:42: Processing jobs with page 1
+2020-07-01 15:30:42: No job found
+2020-07-01 15:30:42: Processed jobs with page 1
+2020-07-01 15:30:44: Getting jobs for page: 1 total pages:1
+2020-07-01 15:30:44: Processing jobs with page 1
+2020-07-01 15:30:44: No job found
+2020-07-01 15:30:44: Processed jobs with page 1
+2020-07-01 15:30:46: Getting jobs for page: 1 total pages:1
+2020-07-01 15:30:46: Processing jobs with page 1
+2020-07-01 15:30:46: No job found
+2020-07-01 15:30:46: Processed jobs with page 1
+2020-07-01 15:30:48: Getting jobs for page: 1 total pages:1
+2020-07-01 15:30:48: Processing jobs with page 1
+2020-07-01 15:30:48: No job found
+2020-07-01 15:30:48: Processed jobs with page 1
+2020-07-01 15:30:50: Getting jobs for page: 1 total pages:1
+2020-07-01 15:30:50: Processing jobs with page 1
+2020-07-01 15:30:50: No job found
+2020-07-01 15:30:50: Processed jobs with page 1
+2020-07-01 15:31:21: Getting jobs for page: "1" Total pages: "1"
+2020-07-01 15:31:21: Processing jobs with page 1
+2020-07-01 15:31:21: No job found
+2020-07-01 15:31:21: Processed jobs with page 1
+2020-07-01 15:31:37: Getting jobs for page: "1" Total pages: "1"
+2020-07-01 15:31:37: Processing jobs with page 1
+2020-07-01 15:31:37: No job found
+2020-07-01 15:31:37: Processed jobs with page 1
+2020-07-01 15:32:18: Getting jobs for page: "1" Total pages: "1"
+2020-07-01 15:32:18: Processing jobs with page 1
+2020-07-01 15:32:18: No job found
+2020-07-01 15:32:18: Processed jobs with page 1
+2020-07-01 15:32:23: Getting jobs for page: "1" Total pages: "1"
+2020-07-01 15:32:23: Processing jobs with page 1
+2020-07-01 15:32:23: No job found
+2020-07-01 15:32:23: Processed jobs with page 1
+2020-07-01 15:32:56: Getting jobs for page: "1" Total pages: "1"
+2020-07-01 15:32:56: Processing jobs with page 1
+2020-07-01 15:32:56: Processing job with id 8
+2020-07-01 15:32:56: Job 8 updating status to cronjob_in_progress
+2020-07-01 15:32:56: Job 8 updated status to cronjob_in_progress
+2020-07-01 15:32:56: Job 8 running prerequisites
+2020-07-01 15:32:56: Job 8 running cmd "zip ~wajrcs/readme-pre.zip ~wajrcs/README.md"
+2020-07-01 15:32:56: Job 8 output cmd "updating: home/wajrcs/README.md (deflated 69%)
+"
+2020-07-01 15:32:56: Job 8 completed cmd "zip ~wajrcs/readme-pre.zip ~wajrcs/README.md"
+2020-07-01 15:32:56: Job 8 completed prerequisites
+2020-07-01 15:32:56: Job 8 running command
+2020-07-01 15:32:56: Job 8 running cmd "zip ~wajrcs/readme-cmd.zip ~wajrcs/README.md"
+2020-07-01 15:32:56: Job 8 output cmd "updating: home/wajrcs/README.md (deflated 69%)
+"
+2020-07-01 15:32:56: Job 8 completed cmd "zip ~wajrcs/readme-cmd.zip ~wajrcs/README.md"
+2020-07-01 15:32:56: Job 8 completed command
+2020-07-01 15:32:56: Job 8 updating hpc jobId
+2020-07-01 15:34:49: Getting jobs for page: "1" Total pages: "1"
+2020-07-01 15:34:49: Processing jobs with page 1
+2020-07-01 15:34:49: No job found
+2020-07-01 15:34:49: Processed jobs with page 1
+2020-07-01 15:34:54: Getting jobs for page: "1" Total pages: "1"
+2020-07-01 15:34:54: Processing jobs with page 1
+2020-07-01 15:34:54: No job found
+2020-07-01 15:34:54: Processed jobs with page 1
+2020-07-01 15:34:59: Getting jobs for page: "1" Total pages: "1"
+2020-07-01 15:34:59: Processing jobs with page 1
+2020-07-01 15:34:59: No job found
+2020-07-01 15:34:59: Processed jobs with page 1
+2020-07-01 15:35:04: Getting jobs for page: "1" Total pages: "1"
+2020-07-01 15:35:04: Processing jobs with page 1
+2020-07-01 15:35:04: Processing job with id 9
+2020-07-01 15:35:04: Job 9 updating status to cronjob_in_progress
+2020-07-01 15:35:05: Job 9 updated status to cronjob_in_progress
+2020-07-01 15:35:05: Job 9 running prerequisites
+2020-07-01 15:35:05: Job 9 running cmd "zip ~wajrcs/readme-pre.zip ~wajrcs/README.md"
+2020-07-01 15:35:05: Job 9 output cmd "updating: home/wajrcs/README.md (deflated 69%)
+"
+2020-07-01 15:35:05: Job 9 completed cmd "zip ~wajrcs/readme-pre.zip ~wajrcs/README.md"
+2020-07-01 15:35:05: Job 9 completed prerequisites
+2020-07-01 15:35:05: Job 9 running command
+2020-07-01 15:35:05: Job 9 running cmd "zip ~wajrcs/readme-cmd.zip ~wajrcs/README.md"
+2020-07-01 15:35:05: Job 9 output cmd "updating: home/wajrcs/README.md (deflated 69%)
+"
+2020-07-01 15:35:05: Job 9 completed cmd "zip ~wajrcs/readme-cmd.zip ~wajrcs/README.md"
+2020-07-01 15:35:05: Job 9 completed command
+2020-07-01 15:35:05: Job 9 updating status to hpc_queued
+2020-07-01 15:35:05: Job 9 updated status to hpc_queued
+2020-07-01 15:35:05: Job 9 updating status to hpc_in_progress
+2020-07-01 15:35:05: Job 9 updated status to hpc_in_progress
+2020-07-01 15:35:05: Job 9 running postrequisites
+2020-07-01 15:35:05: Job 9 running cmd "zip ~wajrcs/readme-post.zip ~wajrcs/README.md"
+2020-07-01 15:35:05: Job 9 output cmd "updating: home/wajrcs/README.md (deflated 69%)
+"
+2020-07-01 15:35:05: Job 9 completed cmd "zip ~wajrcs/readme-post.zip ~wajrcs/README.md"
+2020-07-01 15:35:05: Job 9 completed postrequisites
+2020-07-01 15:35:05: Job 9 updating status to completed
+2020-07-01 15:35:05: Job 9 updated status to completed
+2020-07-01 15:35:05: Processed jobs with page 1
+2020-07-01 15:35:10: Getting jobs for page: "1" Total pages: "1"
+2020-07-01 15:35:10: Processing jobs with page 1
+2020-07-01 15:35:10: No job found
+2020-07-01 15:35:10: Processed jobs with page 1
+2020-07-01 15:35:15: Getting jobs for page: "1" Total pages: "1"
+2020-07-01 15:35:15: Processing jobs with page 1
+2020-07-01 15:35:15: No job found
+2020-07-01 15:35:15: Processed jobs with page 1
+2020-07-01 15:35:20: Getting jobs for page: "1" Total pages: "1"
+2020-07-01 15:35:20: Processing jobs with page 1
+2020-07-01 15:35:20: No job found
+2020-07-01 15:35:20: Processed jobs with page 1
