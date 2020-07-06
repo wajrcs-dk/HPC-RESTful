@@ -99,17 +99,17 @@ My: 867826
 
 
 {
-  "name": "Zip Archive v1",
-  "command": "zip ~wajrcs/readme-cmd.zip ~wajrcs/README.md",
+  "name": "Zip Archive HPC v1",
+  "command": "zip /data/readme-cmd.zip /data/repo/README.md",
   "jobMetaData": {
     "prerequisites": [
-      "zip ~wajrcs/readme-pre.zip ~wajrcs/README.md"
+      "zip /data/readme-pre.zip /data/repo/README.md"
     ],
     "postrequisites": [
-      "zip ~wajrcs/readme-post.zip ~wajrcs/README.md"
+      "zip /data/readme-post.zip /data/repo/README.md"
     ],
     "output": [
-      "ls ~wajrcs/ | grep '.zip'"
+      "ls /data/ | grep '.zip'"
     ]
   },
   "jobType": "hpc"
@@ -211,5 +211,11 @@ normal*      up 5-00:00:00      2   idle c[1-2]
 Submitted batch job 4
 [root@slurmctld data]# cat slurm-4.out 
  12:53:15 up 13:02,  0 users,  load average: 1.14, 0.93, 0.67
+
+
+
+ Scontrol
+ https://ubccr.freshdesk.com/support/solutions/articles/5000686882
+ https://ubccr.freshdesk.com/support/solutions/articles/5000686861-how-do-i-check-the-status-of-my-job-s-
 
 

@@ -322,11 +322,11 @@ components:
         prerequisites:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/SubJob'
         postrequisites:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/SubJob'
         output:
           type: array
           items:
@@ -383,6 +383,23 @@ components:
             - blocked
       xml:
         name: User
+    SubJob:
+      type: object
+      properties:
+        subJobType:
+          type: string
+          description: Sub Job Type
+          enum:
+            - hpc
+            - archive
+            - unarchive
+            - copy
+        parameters:
+          type: string
+          description: Job parameters
+      required:
+        - subJobType
+        - parameters
     Job:
       type: object
       required:
@@ -410,6 +427,7 @@ components:
           type: string
         command:
           type: string
+          description: Command parameters
         jobMetaData:
           $ref: '#/components/schemas/JobMetadata'
         jobType:
@@ -417,7 +435,9 @@ components:
           description: Job Type
           enum:
             - hpc
-            - shell
+            - archive
+            - unarchive
+            - copy
         created:
           type: string
           format: date-time
