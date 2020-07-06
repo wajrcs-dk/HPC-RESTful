@@ -4,6 +4,8 @@ https://dev.to/hmajid2301/implementing-a-simple-rest-api-using-openapi-flask-con
 
 https://github.com/zalando/connexion/commit/518d1dd3d711782aa56eb406b7fb346443d94271
 
+https://phoenixnap.com/kb/how-to-share-data-between-docker-containers
+
 ////////////////////////////////////////
 
 mysql:
@@ -217,5 +219,50 @@ Submitted batch job 4
  Scontrol
  https://ubccr.freshdesk.com/support/solutions/articles/5000686882
  https://ubccr.freshdesk.com/support/solutions/articles/5000686861-how-do-i-check-the-status-of-my-job-s-
+
+gcc -o Bin/HelloWorld Source/HelloWorld.c
+
+-------------------------
+
+Compile Job
+
+{
+  "name": "Compile v1",
+  "command": "gcc -o /data/jobs/{jobId}/HelloWorld /data/jobs/{jobId}/HelloWorld.c",
+  "jobMetaData": {
+    "prerequisites": [{
+      "subJobType": "unarchive",
+      "parameters": "/data/input/HelloWorld.zip -d /data/jobs/{jobId}/"
+    }],
+    "postrequisites": [{
+      "subJobType": "archive",
+      "parameters": "/data/output/{jobId}.zip /data/jobs/{jobId}/"
+    }],
+    "output": "/data/output/{jobId}.zip"
+  },
+  "jobType": "hpc"
+}
+
+
+-------------------------
+
+Archive Job
+
+{
+  "name": "Archive v1",
+  "command": "zip /data/readme-cmd.zip /data/repo/README.md",
+  "jobMetaData": {
+    "prerequisites": [
+      "zip /data/readme-pre.zip /data/repo/README.md"
+    ],
+    "postrequisites": [
+      "zip /data/readme-post.zip /data/repo/README.md"
+    ],
+    "output": [
+      "ls /data/ | grep '.zip'"
+    ]
+  },
+  "jobType": "hpc"
+}
 
 
