@@ -38,13 +38,13 @@ class Job:
         # Poll process for new output until finished
         while True:
             nextline = process.stdout.readline()
-            if nextline == '' and process.poll() is not None:
+            if str(nextline) == '' and process.poll() is not None:
                 break
             
             if print_result:
                 sys.stdout.write(nextline)
                 sys.stdout.flush()
-            result = result + nextline
+            result = result + str(nextline)
 
         output = process.communicate()[0]
         exitCode = process.returncode
