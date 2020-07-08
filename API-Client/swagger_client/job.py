@@ -38,11 +38,7 @@ class Job:
         '''
         process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = process.communicate()
-
-        if err:
-             print('The process raised an error:', err.decode())
-
-        return [err.decode(), out.decode()]
+        return [out, err]
 
         '''
         command = subprocess.run([cmd], check=False)
@@ -97,25 +93,29 @@ class Job:
             logger.log(f, 'Job ' + str(job['jobId']) + ' running cmd "' + cmd_str + '"')
             
             result = self.run(cmd_str, False)
-            cmd_code = result[0]
-            cmd_output = result[1]
+            cmd_error = result[1]
+            cmd_output = result[0]
 
-            print(result)
+            if cmd_error:
+                logger.log(f, 'Job ' + str(job['jobId']) + ' error cmd "' + cmd_error.decode() + '"')
+            else:
+                if cmd['subJobType'] == 'hpc':
+                    logger.log(f, 'Job ' + str(job['jobId']) + ' updating hpc jobId')
+                    job['hpcJobId'] = int(cmd_output.replace("Submitted batch job", "").strip())
+                    now = time.strftime('%Y-%m-%d %H:%M:%S')
+                    job['created'] = now
+                    job['updated'] = now
+                    self.update_job(job['jobId'], access_token, job)
+                    logger.log(f, 'Job ' + str(job['jobId']) + ' updated hpcJobId to '+str(job['hpcJobId']))
+                
+                cmd_output = cmd_output.replace("\n", '|')
+                logger.log(f, 'Job ' + str(job['jobId']) + ' output cmd "' + cmd_output + '"')
+                logger.log(f, 'Job ' + str(job['jobId']) + ' completed cmd "' + cmd_str + '"')
 
-            if cmd['subJobType'] == 'hpc':
-                logger.log(f, 'Job ' + str(job['jobId']) + ' updating hpc jobId')
-                job['hpcJobId'] = int(cmd_output.replace("Submitted batch job", "").strip())
-                now = time.strftime('%Y-%m-%d %H:%M:%S')
-                job['created'] = now
-                job['updated'] = now
-                self.update_job(job['jobId'], access_token, job)
-                logger.log(f, 'Job ' + str(job['jobId']) + ' updated hpcJobId to '+str(job['hpcJobId']))
-            
-            cmd_output = cmd_output.replace("\n", '|')
-            logger.log(f, 'Job ' + str(job['jobId']) + ' output cmd "' + cmd_output + '"')
-            logger.log(f, 'Job ' + str(job['jobId']) + ' completed cmd "' + cmd_str + '"')
-
-            return cmd_output
+                return cmd_output
+            else:
+                self.mark_job_error(job, access_token, logger, f)
+                return False
         else:
             self.mark_job_error(job, access_token, logger, f)
             return False
