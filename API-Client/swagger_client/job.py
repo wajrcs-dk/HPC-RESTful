@@ -97,7 +97,7 @@ class Job:
             cmd_output = str(result[0])
 
             if cmd_error:
-                logger.log(f, 'Job ' + str(job['jobId']) + ' error cmd "' + cmd_error.decode() + '"')
+                logger.log(f, 'Job ' + str(job['jobId']) + ' error cmd "' + cmd_error + '"')
                 self.mark_job_error(job, access_token, logger, f)
                 return False
             else:
