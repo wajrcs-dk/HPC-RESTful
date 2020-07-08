@@ -8,5 +8,5 @@
 #SBATCH -o slurm.%N.%j.out # STDOUT
 #SBATCH -e slurm.%N.%j.err # STDERR
 for i in {1..100000}; do
-echo $RANDOM >> SomeRandomNumbers.txt
-sort SomeRandomNumbers.txt
+echo $RANDOM >> /data/input/SomeRandomNumbers.txt
+sort -r /data/input/SomeRandomNumbers.txt > /data/ouput/SortedRandomNumbers.txt

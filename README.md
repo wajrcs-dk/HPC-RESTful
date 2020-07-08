@@ -245,6 +245,23 @@ Compile Job
   "jobType": "hpc"
 }
 
+-------------------------
+
+Bash Job
+
+{
+  "name": "Compile v1",
+  "command": "/data/input/MyScript.sh",
+  "jobMetaData": {
+    "prerequisites": [],
+    "postrequisites": [{
+      "subJobType": "archive",
+      "parameters": "/data/output/{jobId}.zip|/data/ouput/SortedRandomNumbers.txt"
+    }],
+    "output": "/data/output/{jobId}.zip"
+  },
+  "jobType": "hpc"
+}
 
 -------------------------
 

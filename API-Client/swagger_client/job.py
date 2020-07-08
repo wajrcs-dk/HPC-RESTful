@@ -2,6 +2,7 @@ import requests
 import json
 import os
 import time
+import shutil
 from swagger_client.api import Api
 
 class Job:
@@ -49,6 +50,9 @@ class Job:
             parameters = cmd['parameters'].split('|')
             if len(parameters) == 2:
                 if os.path.isdir(os.path.dirname(parameters[0])) and os.path.isdir(parameters[1]):
+                    cmd_str = 'zip -r ' + parameters[0] + ' ' + parameters[1]
+                    valid = True
+                if os.path.isdir(os.path.dirname(parameters[0])) and os.path.isfile(parameters[1]):
                     cmd_str = 'zip -r ' + parameters[0] + ' ' + parameters[1]
                     valid = True
 
@@ -179,5 +183,8 @@ class Job:
                 
                 if ret != False:
                     logger.log(f, 'Job ' + str(job['jobId']) + ' completed postrequisites')
+
+                    if not os.path.exists(BASE_PATH + str(job['jobId']) + '/'):
+                        shutil.rmtree(BASE_PATH + str(job['jobId']) + '/')
 
                     logger.log(f, 'Job ' + str(job['jobId']) + ' completed finally')
