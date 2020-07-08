@@ -250,7 +250,7 @@ Compile Job
 Bash Job
 
 {
-  "name": "Compile v1",
+  "name": "Bash Sort v1",
   "command": "/data/input/MyScript.sh",
   "jobMetaData": {
     "prerequisites": [],
