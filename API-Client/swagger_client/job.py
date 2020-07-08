@@ -126,9 +126,8 @@ class Job:
                 COMPLETING,CONFIGURING,RESIZING,REVOKED,SPECIAL_EXIT
                 '''
                 if attr.find('JobState=') != -1:
-                    attr.split("=")
-                    
                     logger.log(f, 'Job ' + str(job['jobId']) + ' found job state via HPC: ' + str(attr))
+                    attr = attr.split("=")
 
                     if len(attr)==2:
                         if attr[1] == 'COMPLETED':
