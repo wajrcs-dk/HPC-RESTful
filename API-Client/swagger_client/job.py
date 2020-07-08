@@ -38,7 +38,7 @@ class Job:
         # Poll process for new output until finished
         while True:
             nextline = process.stdout.readline()
-            if str(nextline) == '' and process.poll() is not None:
+            if nextline == '' and process.poll() is not None:
                 break
             
             if print_result:
