@@ -31,7 +31,7 @@ class Job:
         job['status'] = 'cronjob_failed'
         self.update_job_status(job, access_token, logger, f)
 
-    def run(self, cmd):
+    def run(self, cmd, print_result):
         process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         result = ''
 
@@ -97,7 +97,7 @@ class Job:
             logger.log(f, 'Job ' + str(job['jobId']) + ' running cmd "' + cmd_str + '"')
             '''stream = os.popen(cmd_str)
             cmd_output = stream.read()'''
-            result = self.run(cmd_str)
+            result = self.run(cmd_str, False)
             cmd_code = result[0]
             cmd_output = result[1]
 
