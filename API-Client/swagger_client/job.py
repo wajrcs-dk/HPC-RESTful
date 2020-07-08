@@ -41,6 +41,9 @@ class Job:
             if os.path.isfile(cmd['parameters']) and file_extension == '.sh':
                 cmd_str = 'sbatch ' + cmd['parameters']
                 valid = True
+            else:
+                cmd_str = 'sbatch ' + cmd['parameters']
+                valid = True
 
         elif cmd['subJobType'] == 'archive':
             parameters = cmd['parameters'].split('|')

@@ -1,5 +1,6 @@
 import time
 import json
+import os
 from swagger_client import job
 from swagger_client import logger
 
@@ -7,6 +8,7 @@ runner = True
 time_to_sleep = 5
 access_token = 'N9TT-9G0A-B7FQ-RANC'
 URL = 'http://restapi:8080/Master-Thesis/HPC-RESTful/1.0.0/';
+BASE_PATH = '/data/jobs/'
 pageLength = 1
 
 while runner:
@@ -30,6 +32,10 @@ while runner:
             if len(jobs['jobs']) > 0:
                 for job_db in jobs['jobs']:
                     logger.log(f, 'Processing job with id ' + str(job_db['jobId']))
+                    
+                    if not os.path.exists(BASE_PATH + str(job_db['jobId']) + '/'):
+                        os.makedirs(BASE_PATH + str(job_db['jobId']) + '/')
+
                     jobObj.execute_job(job_db, access_token, logger, f)
             else:
                 logger.log(f, 'No job found')
