@@ -70,6 +70,7 @@ class Job:
         if valid == True:
             logger.log(f, 'Job ' + str(job['jobId']) + ' running cmd "' + cmd_str + '"')
             stream = os.popen(cmd_str)
+            cmd_output = stream.read()
 
             if cmd['subJobType'] == 'hpc':
                 logger.log(f, 'Job ' + str(job['jobId']) + ' updating hpc jobId')
@@ -79,8 +80,7 @@ class Job:
                 job['updated'] = now
                 self.update_job(job['jobId'], access_token, job)
                 logger.log(f, 'Job ' + str(job['jobId']) + ' updated hpcJobId to '+str(job['hpcJobId']))
-
-            cmd_output = stream.read()
+            
             cmd_output = cmd_output.replace("\n", '|')
             logger.log(f, 'Job ' + str(job['jobId']) + ' output cmd "' + cmd_output + '"')
             logger.log(f, 'Job ' + str(job['jobId']) + ' completed cmd "' + cmd_str + '"')
