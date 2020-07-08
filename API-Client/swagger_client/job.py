@@ -42,7 +42,7 @@ class Job:
                 cmd_str = 'sbatch ' + cmd['parameters']
                 valid = True
             else:
-                cmd_str = 'sbatch ' + cmd['parameters']
+                cmd_str = 'sbatch --wrap="' + cmd['parameters'] + '"'
                 valid = True
 
         elif cmd['subJobType'] == 'archive':
