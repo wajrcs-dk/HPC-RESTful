@@ -32,20 +32,10 @@ class Job:
         self.update_job_status(job, access_token, logger, f)
 
     def run(self, cmd, print_result):
-        '''stream = os.popen(cmd)
+        stream = os.popen(cmd_str)
         cmd_output = stream.read()
-        exit_code = 0
-        '''
-        process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = process.communicate()
-        return [out, err]
 
-        '''
-        command = subprocess.run([cmd], check=False)
-        return [command.returncode, str(command.stdout), str(command.stderr)]
-        '''
-
-        # return [exit_code, cmd_output]
+        return [0, cmd_output]
 
     def execute_cmd(self, job, cmd, access_token, logger, f):
         cmd_str = ''
@@ -93,28 +83,23 @@ class Job:
             logger.log(f, 'Job ' + str(job['jobId']) + ' running cmd "' + cmd_str + '"')
             
             result = self.run(cmd_str, False)
-            cmd_error = str(result[1])
-            cmd_output = str(result[0])
+            cmd_code = result[0]
+            cmd_output = result[1]
 
-            if cmd_error:
-                logger.log(f, 'Job ' + str(job['jobId']) + ' error cmd "' + cmd_error + '"')
-                self.mark_job_error(job, access_token, logger, f)
-                return False
-            else:
-                if cmd['subJobType'] == 'hpc':
-                    logger.log(f, 'Job ' + str(job['jobId']) + ' updating hpc jobId')
-                    job['hpcJobId'] = int(cmd_output.replace("Submitted batch job", "").strip())
-                    now = time.strftime('%Y-%m-%d %H:%M:%S')
-                    job['created'] = now
-                    job['updated'] = now
-                    self.update_job(job['jobId'], access_token, job)
-                    logger.log(f, 'Job ' + str(job['jobId']) + ' updated hpcJobId to '+str(job['hpcJobId']))
-                
-                cmd_output = cmd_output.replace("\n", '|')
-                logger.log(f, 'Job ' + str(job['jobId']) + ' output cmd "' + cmd_output + '"')
-                logger.log(f, 'Job ' + str(job['jobId']) + ' completed cmd "' + cmd_str + '"')
+            if cmd['subJobType'] == 'hpc':
+                logger.log(f, 'Job ' + str(job['jobId']) + ' updating hpc jobId')
+                job['hpcJobId'] = int(cmd_output.replace("Submitted batch job", "").strip())
+                now = time.strftime('%Y-%m-%d %H:%M:%S')
+                job['created'] = now
+                job['updated'] = now
+                self.update_job(job['jobId'], access_token, job)
+                logger.log(f, 'Job ' + str(job['jobId']) + ' updated hpcJobId to '+str(job['hpcJobId']))
+            
+            cmd_output = cmd_output.replace("\n", '|')
+            logger.log(f, 'Job ' + str(job['jobId']) + ' output cmd "' + cmd_output + '"')
+            logger.log(f, 'Job ' + str(job['jobId']) + ' completed cmd "' + cmd_str + '"')
 
-                return cmd_output
+            return cmd_output
         else:
             self.mark_job_error(job, access_token, logger, f)
             return False
@@ -147,35 +132,34 @@ class Job:
         cmd_obj['parameters'] = str(job['hpcJobId'])
         result = self.execute_cmd(job, cmd_obj, '', logger, f)
 
-        if result != False:
-            result = result.split("\n")
-            for line in result:
-                line = line.strip().split(" ")
-                for attr in line:
-                    '''
-                    PENDING,RUNNING,SUSPENDED,COMPLETED,CANCELLED,FAILED,
-                    TIMEOUT,NODE_FAIL,PREEMPTED,BOOT_FAIL,DEADLINE,OUT_OF_MEMORY,
-                    COMPLETING,CONFIGURING,RESIZING,REVOKED,SPECIAL_EXIT
-                    '''
-                    if attr.find('JobState=') != -1:
-                        logger.log(f, 'Job ' + str(job['jobId']) + ' found job state via HPC: ' + str(attr))
-                        attr = attr.split("=")
+        result = result.split("\n")
+        for line in result:
+            line = line.strip().split(" ")
+            for attr in line:
+                '''
+                PENDING,RUNNING,SUSPENDED,COMPLETED,CANCELLED,FAILED,
+                TIMEOUT,NODE_FAIL,PREEMPTED,BOOT_FAIL,DEADLINE,OUT_OF_MEMORY,
+                COMPLETING,CONFIGURING,RESIZING,REVOKED,SPECIAL_EXIT
+                '''
+                if attr.find('JobState=') != -1:
+                    logger.log(f, 'Job ' + str(job['jobId']) + ' found job state via HPC: ' + str(attr))
+                    attr = attr.split("=")
 
-                        if len(attr)==2:
-                            if attr[1] == 'COMPLETED':
-                                ret = 2
-                            elif attr[1] == 'PENDING':
-                                ret = 1
-                            elif attr[1] == 'RUNNING':
-                                ret = 1
-                            elif attr[1] == 'FAILED':
-                                ret = 3
-                            elif attr[1] == 'CANCELLED':
-                                ret = 4
-                            else:
-                                ret = 5
-                            break
-            logger.log(f, 'Job ' + str(job['jobId']) + ' returning job state: ' + str(ret))
+                    if len(attr)==2:
+                        if attr[1] == 'COMPLETED':
+                            ret = 2
+                        elif attr[1] == 'PENDING':
+                            ret = 1
+                        elif attr[1] == 'RUNNING':
+                            ret = 1
+                        elif attr[1] == 'FAILED':
+                            ret = 3
+                        elif attr[1] == 'CANCELLED':
+                            ret = 4
+                        else:
+                            ret = 5
+                        break
+        logger.log(f, 'Job ' + str(job['jobId']) + ' returning job state: ' + str(ret))
         return ret
 
     def execute_job(self, job, access_token, logger, f):
