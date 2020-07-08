@@ -98,6 +98,8 @@ class Job:
 
             if cmd_error:
                 logger.log(f, 'Job ' + str(job['jobId']) + ' error cmd "' + cmd_error.decode() + '"')
+                self.mark_job_error(job, access_token, logger, f)
+                return False
             else:
                 if cmd['subJobType'] == 'hpc':
                     logger.log(f, 'Job ' + str(job['jobId']) + ' updating hpc jobId')
@@ -113,9 +115,6 @@ class Job:
                 logger.log(f, 'Job ' + str(job['jobId']) + ' completed cmd "' + cmd_str + '"')
 
                 return cmd_output
-            else:
-                self.mark_job_error(job, access_token, logger, f)
-                return False
         else:
             self.mark_job_error(job, access_token, logger, f)
             return False
