@@ -93,8 +93,8 @@ class Job:
             logger.log(f, 'Job ' + str(job['jobId']) + ' running cmd "' + cmd_str + '"')
             
             result = self.run(cmd_str, False)
-            cmd_error = result[1].decode()
-            cmd_output = str(result[0].decode())
+            cmd_error = str(result[1])
+            cmd_output = str(result[0])
 
             if cmd_error:
                 logger.log(f, 'Job ' + str(job['jobId']) + ' error cmd "' + cmd_error.decode() + '"')
