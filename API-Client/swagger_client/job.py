@@ -142,8 +142,12 @@ class Job:
                             ret = 1
                         elif attr[1] == 'RUNNING':
                             ret = 1
-                        else:
+                        elif attr[1] == 'FAILED':
                             ret = 3
+                        elif attr[1] == 'CANCELLED':
+                            ret = 4
+                        else:
+                            ret = 5
                         break
         logger.log(f, 'Job ' + str(job['jobId']) + ' returning job state: ' + str(ret))
         return ret
@@ -172,9 +176,16 @@ class Job:
             if ret == 2:
                 job['status'] = 'hpc_in_progress'
                 self.update_job_status(job, access_token, logger, f)
+            if ret == 3:
+                job['status'] = 'hpc_failed'
+                self.update_job_status(job, access_token, logger, f)
+            if ret == 4:
+                job['status'] = 'hpc_aborted'
+                self.update_job_status(job, access_token, logger, f)
         
         if (job['status'] == 'hpc_in_progress'):
-            if self.check_hpc_job_status(job, logger, f) == 2:
+            ret = self.check_hpc_job_status(job, logger, f)
+            if ret == 2:
                 job['status'] = 'completed'
                 self.update_job_status(job, access_token, logger, f)
 
@@ -188,3 +199,9 @@ class Job:
                         shutil.rmtree(BASE_PATH + str(job['jobId']) + '/')
 
                     logger.log(f, 'Job ' + str(job['jobId']) + ' completed finally')
+            if ret == 3:
+                job['status'] = 'hpc_failed'
+                self.update_job_status(job, access_token, logger, f)
+            if ret == 4:
+                job['status'] = 'hpc_aborted'
+                self.update_job_status(job, access_token, logger, f)
