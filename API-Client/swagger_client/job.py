@@ -157,7 +157,11 @@ class Job:
                     self.update_job_status(job, access_token, logger, f)
         
         if (job['status'] == 'hpc_queued'):
-            if self.check_hpc_job_status(job, logger, f) == 1:
+            ret = self.check_hpc_job_status(job, logger, f)
+            if ret == 1:
+                job['status'] = 'hpc_in_progress'
+                self.update_job_status(job, access_token, logger, f)
+            if ret == 2:
                 job['status'] = 'hpc_in_progress'
                 self.update_job_status(job, access_token, logger, f)
         
