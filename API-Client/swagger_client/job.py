@@ -113,7 +113,7 @@ class Job:
         
         cmd_obj = {}
         cmd_obj['subJobType'] = 'hpc_status'
-        cmd_obj['parameters'] = job['hpcJobId']
+        cmd_obj['parameters'] = str(job['hpcJobId'])
         result = self.execute_cmd(job, cmd_obj, '', logger, f)
 
         result = result.split("\n")
