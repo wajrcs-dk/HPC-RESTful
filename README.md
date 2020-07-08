@@ -6,6 +6,8 @@ https://github.com/zalando/connexion/commit/518d1dd3d711782aa56eb406b7fb346443d9
 
 https://phoenixnap.com/kb/how-to-share-data-between-docker-containers
 
+https://stackoverflow.com/questions/50116182/slurm-how-can-i-prevent-jobs-information-to-be-removed
+
 ////////////////////////////////////////
 
 mysql:
@@ -232,11 +234,11 @@ Compile Job
   "jobMetaData": {
     "prerequisites": [{
       "subJobType": "unarchive",
-      "parameters": "/data/input/HelloWorld.zip -d /data/jobs/{jobId}/"
+      "parameters": "/data/input/HelloWorld.zip|/data/jobs/{jobId}/"
     }],
     "postrequisites": [{
       "subJobType": "archive",
-      "parameters": "/data/output/{jobId}.zip /data/jobs/{jobId}/"
+      "parameters": "/data/output/{jobId}.zip|/data/jobs/{jobId}/"
     }],
     "output": "/data/output/{jobId}.zip"
   },

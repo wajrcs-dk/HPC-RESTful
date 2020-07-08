@@ -122,17 +122,34 @@ def add_job(body, access_token):  # noqa: E501
             "type": "about:blank"
         }
         return error_message, error_code
-    
+
     row = row[0]
     jobMetaData = json.loads(row[6])
+    
+    ind = 0
+    for prerequisites in jobMetaData['prerequisites']:
+        jobMetaData['prerequisites'][ind]['parameters'] = prerequisites['parameters'].replace('{jobId}', str(job_id))
+        ind = ind + 1
+    
+    ind = 0
+    for postrequisites in jobMetaData['postrequisites']:
+        jobMetaData['postrequisites'][ind]['parameters'] = postrequisites['parameters'].replace('{jobId}', str(job_id))
+        ind = ind + 1
+
+    jobMetaData['output'] = jobMetaData['output'].replace('{jobId}', str(job_id))
+
+    print(row)
+    
+    # command
+    command = row[5].replace('{jobId}', str(job_id))
     my_result = {
         "jobId": row[0],
         "hpcJobId": row[1],
         "operation": row[2],
         "userId": row[3],
         "name": row[4],
-        "command": row[5],
-        "jobMetaData": jobMetaData,
+        "command": command,
+        "jobMetaData": json.dumps(jobMetaData),
         "jobType": row[7],
         "created": row[8],
         "updated": row[9],
@@ -140,6 +157,9 @@ def add_job(body, access_token):  # noqa: E501
         "log": row[11],
         "status": row[12]
     }
+    Job.update_job(job_id, my_result)
+    
+    my_result['jobMetaData'] = jobMetaData
 
     if connexion.request.is_json:
         return my_result

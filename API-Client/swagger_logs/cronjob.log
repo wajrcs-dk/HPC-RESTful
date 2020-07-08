@@ -133,3 +133,179 @@
 2020-07-01 15:35:20: Processing jobs with page 1
 2020-07-01 15:35:20: No job found
 2020-07-01 15:35:20: Processed jobs with page 1
+2020-07-08 10:35:47: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 10:35:47: Failed getting jobs with page 1, error: {"detail": "Error in getting jobs from database: MySQL Connection not available.", "status": 500, "title": "Internal Server Error", "type": "about:blank"}
+2020-07-08 10:37:17: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 10:37:17: Failed getting jobs with page 1, error: {"detail": "Error in getting jobs from database: MySQL Connection not available.", "status": 500, "title": "Internal Server Error", "type": "about:blank"}
+2020-07-08 10:37:22: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 10:37:22: Failed getting jobs with page 1, error: {"detail": "Error in getting jobs from database: MySQL Connection not available.", "status": 500, "title": "Internal Server Error", "type": "about:blank"}
+2020-07-08 10:37:27: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 10:37:27: Failed getting jobs with page 1, error: {"detail": "Error in getting jobs from database: MySQL Connection not available.", "status": 500, "title": "Internal Server Error", "type": "about:blank"}
+2020-07-08 10:37:32: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 10:37:32: Failed getting jobs with page 1, error: {"detail": "Error in getting jobs from database: MySQL Connection not available.", "status": 500, "title": "Internal Server Error", "type": "about:blank"}
+2020-07-08 10:37:57: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 10:37:57: Processing jobs with page 1
+2020-07-08 10:37:57: Processing job with id 27
+2020-07-08 10:37:57: Job 27 updating status to cronjob_in_progress
+2020-07-08 10:49:01: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 10:49:01: Processing jobs with page 1
+2020-07-08 10:49:01: Processing job with id 27
+2020-07-08 10:49:01: Job 27 updating status to cronjob_in_progress
+2020-07-08 10:49:01: Job 27 updated status to cronjob_in_progress
+2020-07-08 10:49:01: Job 27 running prerequisites
+2020-07-08 11:00:12: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:00:12: Processing jobs with page 1
+2020-07-08 11:00:12: Processing job with id 26
+2020-07-08 11:00:12: Job 26 updating status to cronjob_in_progress
+2020-07-08 11:00:12: Job 26 updated status to cronjob_in_progress
+2020-07-08 11:00:12: Job 26 running prerequisites
+2020-07-08 11:00:53: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:00:53: Processing jobs with page 1
+2020-07-08 11:00:53: Processing job with id 25
+2020-07-08 11:00:53: Job 25 updating status to cronjob_in_progress
+2020-07-08 11:00:53: Job 25 updated status to cronjob_in_progress
+2020-07-08 11:00:53: Job 25 running prerequisites
+2020-07-08 11:02:18: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:02:18: Processing jobs with page 1
+2020-07-08 11:02:18: Processing job with id 24
+2020-07-08 11:02:18: Job 24 updating status to cronjob_in_progress
+2020-07-08 11:02:18: Job 24 updated status to cronjob_in_progress
+2020-07-08 11:02:18: Job 24 running prerequisites
+2020-07-08 11:02:18: Job 24 updating status to cronjob_failed
+2020-07-08 11:02:19: Job 24 updated status to cronjob_failed
+2020-07-08 11:02:19: Processed jobs with page 1
+2020-07-08 11:02:19: Getting jobs for page: "2" Total pages: "9"
+2020-07-08 11:02:19: Processing jobs with page 2
+2020-07-08 11:02:19: Processing job with id 22
+2020-07-08 11:02:19: Job 22 updating status to cronjob_in_progress
+2020-07-08 11:02:19: Job 22 updated status to cronjob_in_progress
+2020-07-08 11:02:19: Job 22 running prerequisites
+2020-07-08 11:02:19: Job 22 updating status to cronjob_failed
+2020-07-08 11:02:19: Job 22 updated status to cronjob_failed
+2020-07-08 11:02:19: Processed jobs with page 2
+2020-07-08 11:02:19: Getting jobs for page: "3" Total pages: "8"
+2020-07-08 11:02:19: Processing jobs with page 3
+2020-07-08 11:02:19: Processing job with id 20
+2020-07-08 11:02:19: Job 20 updating status to cronjob_in_progress
+2020-07-08 11:02:19: Job 20 updated status to cronjob_in_progress
+2020-07-08 11:02:19: Job 20 running prerequisites
+2020-07-08 11:02:19: Job 20 updating status to cronjob_failed
+2020-07-08 11:02:19: Job 20 updated status to cronjob_failed
+2020-07-08 11:02:19: Processed jobs with page 3
+2020-07-08 11:02:19: Getting jobs for page: "4" Total pages: "7"
+2020-07-08 11:02:19: Processing jobs with page 4
+2020-07-08 11:02:19: Processing job with id 18
+2020-07-08 11:02:19: Job 18 updating status to cronjob_in_progress
+2020-07-08 11:02:19: Job 18 updated status to cronjob_in_progress
+2020-07-08 11:02:19: Job 18 running prerequisites
+2020-07-08 11:02:19: Job 18 updating status to cronjob_failed
+2020-07-08 11:02:19: Job 18 updated status to cronjob_failed
+2020-07-08 11:02:19: Processed jobs with page 4
+2020-07-08 11:02:19: Getting jobs for page: "5" Total pages: "6"
+2020-07-08 11:02:19: Processing jobs with page 5
+2020-07-08 11:02:19: Processing job with id 16
+2020-07-08 11:02:19: Job 16 updating status to cronjob_in_progress
+2020-07-08 11:02:19: Job 16 updated status to cronjob_in_progress
+2020-07-08 11:02:19: Job 16 running prerequisites
+2020-07-08 11:02:19: Job 16 updating status to cronjob_failed
+2020-07-08 11:02:19: Job 16 updated status to cronjob_failed
+2020-07-08 11:02:19: Processed jobs with page 5
+2020-07-08 11:03:09: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:03:09: Processing jobs with page 1
+2020-07-08 11:03:09: Processing job with id 23
+2020-07-08 11:03:09: Job 23 updating status to cronjob_in_progress
+2020-07-08 11:03:09: Job 23 updated status to cronjob_in_progress
+2020-07-08 11:03:09: Job 23 running prerequisites
+2020-07-08 11:03:09: Job 23 updating status to cronjob_failed
+2020-07-08 11:03:10: Job 23 updated status to cronjob_failed
+2020-07-08 11:03:10: Processed jobs with page 1
+2020-07-08 11:03:10: Getting jobs for page: "2" Total pages: "4"
+2020-07-08 11:03:10: Processing jobs with page 2
+2020-07-08 11:03:10: Processing job with id 19
+2020-07-08 11:03:10: Job 19 updating status to cronjob_in_progress
+2020-07-08 11:03:10: Job 19 updated status to cronjob_in_progress
+2020-07-08 11:03:10: Job 19 running prerequisites
+2020-07-08 11:03:10: Job 19 updating status to cronjob_failed
+2020-07-08 11:03:10: Job 19 updated status to cronjob_failed
+2020-07-08 11:03:10: Processed jobs with page 2
+2020-07-08 11:03:10: Getting jobs for page: "3" Total pages: "3"
+2020-07-08 11:03:10: Processing jobs with page 3
+2020-07-08 11:03:10: No job found
+2020-07-08 11:03:10: Processed jobs with page 3
+2020-07-08 11:03:15: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:03:15: Processing jobs with page 1
+2020-07-08 11:03:15: Processing job with id 21
+2020-07-08 11:03:15: Job 21 updating status to cronjob_in_progress
+2020-07-08 11:03:15: Job 21 updated status to cronjob_in_progress
+2020-07-08 11:03:15: Job 21 running prerequisites
+2020-07-08 11:03:15: Job 21 updating status to cronjob_failed
+2020-07-08 11:03:15: Job 21 updated status to cronjob_failed
+2020-07-08 11:03:15: Processed jobs with page 1
+2020-07-08 11:03:15: Getting jobs for page: "2" Total pages: "2"
+2020-07-08 11:03:15: Processing jobs with page 2
+2020-07-08 11:03:15: No job found
+2020-07-08 11:03:15: Processed jobs with page 2
+2020-07-08 11:03:20: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:03:20: Processing jobs with page 1
+2020-07-08 11:03:20: Processing job with id 17
+2020-07-08 11:03:20: Job 17 updating status to cronjob_in_progress
+2020-07-08 11:03:20: Job 17 updated status to cronjob_in_progress
+2020-07-08 11:03:20: Job 17 running prerequisites
+2020-07-08 11:03:20: Job 17 updating status to cronjob_failed
+2020-07-08 11:03:20: Job 17 updated status to cronjob_failed
+2020-07-08 11:03:20: Processed jobs with page 1
+2020-07-08 11:03:25: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:03:25: Processing jobs with page 1
+2020-07-08 11:03:25: No job found
+2020-07-08 11:03:25: Processed jobs with page 1
+2020-07-08 11:03:30: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:03:30: Processing jobs with page 1
+2020-07-08 11:03:30: No job found
+2020-07-08 11:03:30: Processed jobs with page 1
+2020-07-08 11:03:35: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:03:35: Processing jobs with page 1
+2020-07-08 11:03:35: No job found
+2020-07-08 11:03:35: Processed jobs with page 1
+2020-07-08 11:03:40: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:03:40: Processing jobs with page 1
+2020-07-08 11:03:40: No job found
+2020-07-08 11:03:40: Processed jobs with page 1
+2020-07-08 11:03:45: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:03:45: Processing jobs with page 1
+2020-07-08 11:03:45: Processing job with id 28
+2020-07-08 11:03:45: Job 28 updating status to cronjob_in_progress
+2020-07-08 11:03:45: Job 28 updated status to cronjob_in_progress
+2020-07-08 11:03:45: Job 28 running prerequisites
+2020-07-08 11:03:45: Job 28 updating status to cronjob_failed
+2020-07-08 11:03:45: Job 28 updated status to cronjob_failed
+2020-07-08 11:03:45: Processed jobs with page 1
+2020-07-08 11:03:50: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:03:50: Processing jobs with page 1
+2020-07-08 11:03:50: No job found
+2020-07-08 11:03:50: Processed jobs with page 1
+2020-07-08 11:03:55: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:03:55: Processing jobs with page 1
+2020-07-08 11:03:55: No job found
+2020-07-08 11:03:55: Processed jobs with page 1
+2020-07-08 11:04:00: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:04:00: Processing jobs with page 1
+2020-07-08 11:04:00: No job found
+2020-07-08 11:04:00: Processed jobs with page 1
+2020-07-08 11:06:18: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:06:18: Processing jobs with page 1
+2020-07-08 11:06:18: No job found
+2020-07-08 11:06:18: Processed jobs with page 1
+2020-07-08 11:06:23: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:06:23: Processing jobs with page 1
+2020-07-08 11:06:23: Processing job with id 29
+2020-07-08 11:06:23: Job 29 updating status to cronjob_in_progress
+2020-07-08 11:06:23: Job 29 updated status to cronjob_in_progress
+2020-07-08 11:06:23: Job 29 running prerequisites
+2020-07-08 11:06:23: Job 29 running 1 of 1
+2020-07-08 11:06:23: Job 29 updating status to cronjob_failed
+2020-07-08 11:06:23: Job 29 updated status to cronjob_failed
+2020-07-08 11:06:23: Processed jobs with page 1
+2020-07-08 11:06:28: Getting jobs for page: "1" Total pages: "1"
+2020-07-08 11:06:28: Processing jobs with page 1
+2020-07-08 11:06:28: No job found
+2020-07-08 11:06:28: Processed jobs with page 1

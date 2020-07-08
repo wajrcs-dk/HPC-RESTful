@@ -34,11 +34,11 @@ while runner:
             else:
                 logger.log(f, 'No job found')
             logger.log(f, 'Processed jobs with page ' + str(pageNumber))
+            totalPages = jobs['totalPages']
         else:
             logger.log(f, 'Failed getting jobs with page ' + str(pageNumber) + ', error: '+json.dumps(jobs))
         
         pageNumber = pageNumber + 1
-        totalPages = jobs['totalPages']
     
     logger.log_close(f)
     time.sleep(time_to_sleep)
