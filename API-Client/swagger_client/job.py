@@ -70,10 +70,7 @@ class Job:
         if valid == True:
             logger.log(f, 'Job ' + str(job['jobId']) + ' running cmd "' + cmd_str + '"')
             stream = os.popen(cmd_str)
-            cmd_output = stream.read()
-            logger.log(f, 'Job ' + str(job['jobId']) + ' output cmd "' + cmd_output + '"')
-            logger.log(f, 'Job ' + str(job['jobId']) + ' completed cmd "' + cmd_str + '"')
-            
+
             if cmd['subJobType'] == 'hpc':
                 logger.log(f, 'Job ' + str(job['jobId']) + ' updating hpc jobId')
                 job['hpcJobId'] = int(cmd_output.replace("Submitted batch job", "").strip())
@@ -81,7 +78,12 @@ class Job:
                 job['created'] = now
                 job['updated'] = now
                 self.update_job(job['jobId'], access_token, job)
-                logger.log(f, 'Job ' + str(job['jobId']) + ' updated updated hpc jobId')
+                logger.log(f, 'Job ' + str(job['jobId']) + ' updated hpcJobId to '+str(job['hpcJobId']))
+
+            cmd_output = stream.read()
+            cmd_output = cmd_output.replace("\n", '|')
+            logger.log(f, 'Job ' + str(job['jobId']) + ' output cmd "' + cmd_output + '"')
+            logger.log(f, 'Job ' + str(job['jobId']) + ' completed cmd "' + cmd_str + '"')
 
             return cmd_output
         else:
@@ -132,6 +134,8 @@ class Job:
                     if len(attr)==2:
                         if attr[1] == 'COMPLETED':
                             ret = 2
+                        elif attr[1] == 'PENDING':
+                            ret = 1
                         elif attr[1] == 'RUNNING':
                             ret = 1
                         else:
