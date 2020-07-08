@@ -112,7 +112,7 @@ class Job:
         ret = 0
         
         cmd_obj = {}
-        cmd_obj['subJobType'] = job['hpc_status']
+        cmd_obj['subJobType'] = 'hpc_status'
         cmd_obj['parameters'] = job['hpcJobId']
         result = self.execute_cmd(job, cmd_obj, '', logger, f)
 
