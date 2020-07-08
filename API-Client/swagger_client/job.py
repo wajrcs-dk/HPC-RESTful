@@ -147,34 +147,35 @@ class Job:
         cmd_obj['parameters'] = str(job['hpcJobId'])
         result = self.execute_cmd(job, cmd_obj, '', logger, f)
 
-        result = result.split("\n")
-        for line in result:
-            line = line.strip().split(" ")
-            for attr in line:
-                '''
-                PENDING,RUNNING,SUSPENDED,COMPLETED,CANCELLED,FAILED,
-                TIMEOUT,NODE_FAIL,PREEMPTED,BOOT_FAIL,DEADLINE,OUT_OF_MEMORY,
-                COMPLETING,CONFIGURING,RESIZING,REVOKED,SPECIAL_EXIT
-                '''
-                if attr.find('JobState=') != -1:
-                    logger.log(f, 'Job ' + str(job['jobId']) + ' found job state via HPC: ' + str(attr))
-                    attr = attr.split("=")
+        if result != False:
+            result = result.split("\n")
+            for line in result:
+                line = line.strip().split(" ")
+                for attr in line:
+                    '''
+                    PENDING,RUNNING,SUSPENDED,COMPLETED,CANCELLED,FAILED,
+                    TIMEOUT,NODE_FAIL,PREEMPTED,BOOT_FAIL,DEADLINE,OUT_OF_MEMORY,
+                    COMPLETING,CONFIGURING,RESIZING,REVOKED,SPECIAL_EXIT
+                    '''
+                    if attr.find('JobState=') != -1:
+                        logger.log(f, 'Job ' + str(job['jobId']) + ' found job state via HPC: ' + str(attr))
+                        attr = attr.split("=")
 
-                    if len(attr)==2:
-                        if attr[1] == 'COMPLETED':
-                            ret = 2
-                        elif attr[1] == 'PENDING':
-                            ret = 1
-                        elif attr[1] == 'RUNNING':
-                            ret = 1
-                        elif attr[1] == 'FAILED':
-                            ret = 3
-                        elif attr[1] == 'CANCELLED':
-                            ret = 4
-                        else:
-                            ret = 5
-                        break
-        logger.log(f, 'Job ' + str(job['jobId']) + ' returning job state: ' + str(ret))
+                        if len(attr)==2:
+                            if attr[1] == 'COMPLETED':
+                                ret = 2
+                            elif attr[1] == 'PENDING':
+                                ret = 1
+                            elif attr[1] == 'RUNNING':
+                                ret = 1
+                            elif attr[1] == 'FAILED':
+                                ret = 3
+                            elif attr[1] == 'CANCELLED':
+                                ret = 4
+                            else:
+                                ret = 5
+                            break
+            logger.log(f, 'Job ' + str(job['jobId']) + ' returning job state: ' + str(ret))
         return ret
 
     def execute_job(self, job, access_token, logger, f):
