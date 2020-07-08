@@ -32,15 +32,24 @@ class Job:
         self.update_job_status(job, access_token, logger, f)
 
     def run(self, cmd, print_result):
-        stream = os.popen(cmd)
+        '''stream = os.popen(cmd)
         cmd_output = stream.read()
         exit_code = 0
+        '''
+        process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = process.communicate()
+
+        if err:
+             print('The process raised an error:', err.decode())
+
+        return [err.decode(), out.decode()]
+
         '''
         command = subprocess.run([cmd], check=False)
         return [command.returncode, str(command.stdout), str(command.stderr)]
         '''
 
-        return [exit_code, cmd_output]
+        # return [exit_code, cmd_output]
 
     def execute_cmd(self, job, cmd, access_token, logger, f):
         cmd_str = ''
