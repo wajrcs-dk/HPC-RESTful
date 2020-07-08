@@ -71,7 +71,7 @@ class Job:
             logger.log(f, 'Job ' + str(job['jobId']) + ' running cmd "' + cmd_str + '"')
             stream = os.popen(cmd_str)
             cmd_output = stream.read()
-            logger.log(f, 'Job ' + str(job['jobId']) + ' output cmd "' + cmd_str + '"')
+            logger.log(f, 'Job ' + str(job['jobId']) + ' output cmd "' + cmd_output + '"')
             logger.log(f, 'Job ' + str(job['jobId']) + ' completed cmd "' + cmd_str + '"')
             
             if cmd['subJobType'] == 'hpc':
@@ -127,6 +127,9 @@ class Job:
                 '''
                 if attr.find('JobState=') != -1:
                     attr.split("=")
+                    
+                    logger.log(f, 'Job ' + str(job['jobId']) + ' found job state via HPC: ' + str(attr))
+
                     if len(attr)==2:
                         if attr[1] == 'COMPLETED':
                             ret = 2
@@ -135,6 +138,7 @@ class Job:
                         else:
                             ret = 3
                         break
+        logger.log(f, 'Job ' + str(job['jobId']) + ' returning job state: ' + str(ret))
         return ret
 
     def execute_job(self, job, access_token, logger, f):
