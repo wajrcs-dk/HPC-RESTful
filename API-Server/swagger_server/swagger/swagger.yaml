@@ -360,33 +360,24 @@ paths:
       x-openapi-router-controller: swagger_server.controllers.user_controller
 components:
   schemas:
+    commands:
+      type: array
+      description: commands type and parameters
+      items:
+        $ref: '#/components/schemas/SubJob'
     JobMetadata:
       required:
+      - error
       - output
-      - postrequisites
-      - prerequisites
       type: object
       properties:
-        prerequisites:
-          type: array
-          items:
-            $ref: '#/components/schemas/SubJob'
-        postrequisites:
-          type: array
-          items:
-            $ref: '#/components/schemas/SubJob'
+        error:
+          type: string
         output:
           type: string
       example:
-        prerequisites:
-        - subJobType: hpc
-          parameters: parameters
-        - subJobType: hpc
-          parameters: parameters
         output: output
-        postrequisites:
-        - null
-        - null
+        error: error
     PaginationResponse:
       type: object
       properties:
@@ -458,6 +449,7 @@ components:
           - archive
           - unarchive
           - copy
+          - compile
         parameters:
           type: string
           description: Job parameters
@@ -466,7 +458,7 @@ components:
         parameters: parameters
     Job:
       required:
-      - command
+      - commands
       - name
       - userId
       type: object
@@ -489,19 +481,10 @@ components:
           format: int64
         name:
           type: string
-        command:
-          type: string
-          description: Command parameters
+        commands:
+          $ref: '#/components/schemas/commands'
         jobMetaData:
           $ref: '#/components/schemas/JobMetadata'
-        jobType:
-          type: string
-          description: Job Type
-          enum:
-          - hpc
-          - archive
-          - unarchive
-          - copy
         created:
           type: string
           format: date-time
@@ -525,27 +508,23 @@ components:
           - hpc_aborted
           - completed
       example:
-        log: log
-        created: 2000-01-23T04:56:07.000+00:00
-        userId: 1
-        command: command
         result: result
         jobId: 0
+        log: log
+        created: 2000-01-23T04:56:07.000+00:00
         hpcJobId: 6
         name: name
         jobMetaData:
-          prerequisites:
-          - subJobType: hpc
-            parameters: parameters
-          - subJobType: hpc
-            parameters: parameters
           output: output
-          postrequisites:
-          - null
-          - null
-        jobType: hpc
+          error: error
         operation: queue
+        userId: 1
         updated: 2000-01-23T04:56:07.000+00:00
+        commands:
+        - subJobType: hpc
+          parameters: parameters
+        - subJobType: hpc
+          parameters: parameters
         status: new
       xml:
         name: Job

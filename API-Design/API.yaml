@@ -316,24 +316,20 @@ externalDocs:
   url: 'http://swagger.io'
 components:
   schemas:
+    commands:
+      description: commands type and parameters
+      type: array
+      items:
+        $ref: '#/components/schemas/SubJob'
     JobMetadata:
       type: object
       properties:
-        prerequisites:
-          type: array
-          items:
-            $ref: '#/components/schemas/SubJob'
-        postrequisites:
-          type: array
-          items:
-            $ref: '#/components/schemas/SubJob'
+        error:
+          type: string
         output:
-          type: array
-          items:
-            type: string
+          type: string
       required:
-        - prerequisites
-        - postrequisites
+        - error
         - output
     PaginationResponse:
       type: object
@@ -394,6 +390,7 @@ components:
             - archive
             - unarchive
             - copy
+            - compile
         parameters:
           type: string
           description: Job parameters
@@ -404,7 +401,7 @@ components:
       type: object
       required:
         - name
-        - command
+        - commands
         - userId
       properties:
         jobId:
@@ -425,19 +422,10 @@ components:
           description: User Id or GWDG account number
         name:
           type: string
-        command:
-          type: string
-          description: Command parameters
+        commands:
+          $ref: '#/components/schemas/commands'
         jobMetaData:
           $ref: '#/components/schemas/JobMetadata'
-        jobType:
-          type: string
-          description: Job Type
-          enum:
-            - hpc
-            - archive
-            - unarchive
-            - copy
         created:
           type: string
           format: date-time

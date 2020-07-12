@@ -14,29 +14,24 @@ class JobMetadata(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, prerequisites: List[str]=None, postrequisites: List[str]=None, output: List[str]=None):  # noqa: E501
+    def __init__(self, error: str=None, output: str=None):  # noqa: E501
         """JobMetadata - a model defined in Swagger
 
-        :param prerequisites: The prerequisites of this JobMetadata.  # noqa: E501
-        :type prerequisites: List[str]
-        :param postrequisites: The postrequisites of this JobMetadata.  # noqa: E501
-        :type postrequisites: List[str]
+        :param error: The error of this JobMetadata.  # noqa: E501
+        :type error: str
         :param output: The output of this JobMetadata.  # noqa: E501
-        :type output: List[str]
+        :type output: str
         """
         self.swagger_types = {
-            'prerequisites': List[str],
-            'postrequisites': List[str],
-            'output': List[str]
+            'error': str,
+            'output': str
         }
 
         self.attribute_map = {
-            'prerequisites': 'prerequisites',
-            'postrequisites': 'postrequisites',
+            'error': 'error',
             'output': 'output'
         }
-        self._prerequisites = prerequisites
-        self._postrequisites = postrequisites
+        self._error = error
         self._output = output
 
     @classmethod
@@ -51,68 +46,45 @@ class JobMetadata(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def prerequisites(self) -> List[str]:
-        """Gets the prerequisites of this JobMetadata.
+    def error(self) -> str:
+        """Gets the error of this JobMetadata.
 
 
-        :return: The prerequisites of this JobMetadata.
-        :rtype: List[str]
+        :return: The error of this JobMetadata.
+        :rtype: str
         """
-        return self._prerequisites
+        return self._error
 
-    @prerequisites.setter
-    def prerequisites(self, prerequisites: List[str]):
-        """Sets the prerequisites of this JobMetadata.
+    @error.setter
+    def error(self, error: str):
+        """Sets the error of this JobMetadata.
 
 
-        :param prerequisites: The prerequisites of this JobMetadata.
-        :type prerequisites: List[str]
+        :param error: The error of this JobMetadata.
+        :type error: str
         """
-        if prerequisites is None:
-            raise ValueError("Invalid value for `prerequisites`, must not be `None`")  # noqa: E501
+        if error is None:
+            raise ValueError("Invalid value for `error`, must not be `None`")  # noqa: E501
 
-        self._prerequisites = prerequisites
+        self._error = error
 
     @property
-    def postrequisites(self) -> List[str]:
-        """Gets the postrequisites of this JobMetadata.
-
-
-        :return: The postrequisites of this JobMetadata.
-        :rtype: List[str]
-        """
-        return self._postrequisites
-
-    @postrequisites.setter
-    def postrequisites(self, postrequisites: List[str]):
-        """Sets the postrequisites of this JobMetadata.
-
-
-        :param postrequisites: The postrequisites of this JobMetadata.
-        :type postrequisites: List[str]
-        """
-        if postrequisites is None:
-            raise ValueError("Invalid value for `postrequisites`, must not be `None`")  # noqa: E501
-
-        self._postrequisites = postrequisites
-
-    @property
-    def output(self) -> List[str]:
+    def output(self) -> str:
         """Gets the output of this JobMetadata.
 
 
         :return: The output of this JobMetadata.
-        :rtype: List[str]
+        :rtype: str
         """
         return self._output
 
     @output.setter
-    def output(self, output: List[str]):
+    def output(self, output: str):
         """Sets the output of this JobMetadata.
 
 
         :param output: The output of this JobMetadata.
-        :type output: List[str]
+        :type output: str
         """
         if output is None:
             raise ValueError("Invalid value for `output`, must not be `None`")  # noqa: E501

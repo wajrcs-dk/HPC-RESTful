@@ -230,6 +230,31 @@ Compile Job
 
 {
   "name": "Compile v1",
+  "commands": [
+    {
+      "subJobType": "unarchive",
+      "parameters": "/data/input/HelloWorld.zip|/data/jobs/{jobId}/"
+    }, {
+      "subJobType": "compile",
+      "parameters": "gcc -o /data/jobs/{jobId}/HelloWorld /data/jobs/{jobId}/HelloWorld.c"
+    }, {
+      "subJobType": "archive",
+      "parameters": "/data/output/{jobId}.zip|/data/jobs/{jobId}/"
+    }
+  ],
+  "jobMetaData": {
+    "error": "/data/output/{jobId}.zip",
+    "output": "/data/output/{jobId}.zip"
+  }
+}
+
+
+-------------------------
+
+Compile Job
+
+{
+  "name": "Compile v1",
   "command": "gcc -o /data/jobs/{jobId}/HelloWorld /data/jobs/{jobId}/HelloWorld.c",
   "jobMetaData": {
     "prerequisites": [{

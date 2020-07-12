@@ -6,6 +6,7 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from swagger_server.models.base_model_ import Model
+from swagger_server.models.commands import Commands  # noqa: F401,E501
 from swagger_server.models.job_metadata import JobMetadata  # noqa: F401,E501
 from swagger_server import util
 
@@ -15,7 +16,7 @@ class Job(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, job_id: int=None, hpc_job_id: int=None, operation: str=None, user_id: int=None, name: str=None, command: str=None, job_meta_data: JobMetadata=None, job_type: str=None, created: datetime=None, updated: datetime=None, result: str=None, log: str=None, status: str=None):  # noqa: E501
+    def __init__(self, job_id: int=None, hpc_job_id: int=None, operation: str=None, user_id: int=None, name: str=None, commands: Commands=None, job_meta_data: JobMetadata=None, created: datetime=None, updated: datetime=None, result: str=None, log: str=None, status: str=None):  # noqa: E501
         """Job - a model defined in Swagger
 
         :param job_id: The job_id of this Job.  # noqa: E501
@@ -28,12 +29,10 @@ class Job(Model):
         :type user_id: int
         :param name: The name of this Job.  # noqa: E501
         :type name: str
-        :param command: The command of this Job.  # noqa: E501
-        :type command: str
+        :param commands: The commands of this Job.  # noqa: E501
+        :type commands: Commands
         :param job_meta_data: The job_meta_data of this Job.  # noqa: E501
         :type job_meta_data: JobMetadata
-        :param job_type: The job_type of this Job.  # noqa: E501
-        :type job_type: str
         :param created: The created of this Job.  # noqa: E501
         :type created: datetime
         :param updated: The updated of this Job.  # noqa: E501
@@ -51,9 +50,8 @@ class Job(Model):
             'operation': str,
             'user_id': int,
             'name': str,
-            'command': str,
+            'commands': Commands,
             'job_meta_data': JobMetadata,
-            'job_type': str,
             'created': datetime,
             'updated': datetime,
             'result': str,
@@ -67,9 +65,8 @@ class Job(Model):
             'operation': 'operation',
             'user_id': 'userId',
             'name': 'name',
-            'command': 'command',
+            'commands': 'commands',
             'job_meta_data': 'jobMetaData',
-            'job_type': 'jobType',
             'created': 'created',
             'updated': 'updated',
             'result': 'result',
@@ -81,9 +78,8 @@ class Job(Model):
         self._operation = operation
         self._user_id = user_id
         self._name = name
-        self._command = command
+        self._commands = commands
         self._job_meta_data = job_meta_data
-        self._job_type = job_type
         self._created = created
         self._updated = updated
         self._result = result
@@ -136,16 +132,15 @@ class Job(Model):
 
     def insert_job(body):
         sql = "INSERT into `job`"
-        sql = sql + " (`hpc_job_id`, `operation`, `user_id`, `name`, `command`, `job_meta_data`, `job_type`, `created`, `updated`, `result`, `log`, `status`) VALUES"
-        sql = sql + " (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+        sql = sql + " (`hpc_job_id`, `operation`, `user_id`, `name`, `commands`, `job_meta_data`, `created`, `updated`, `result`, `log`, `status`) VALUES"
+        sql = sql + " (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
         val = (
             str(body['hpcJobId']),
             str(body['operation']),
             str(body['userId']),
             str(body['name']),
-            str(body['command']),
+            str(body['commands']),
             str(body['jobMetaData']),
-            str(body['jobType']),
             str(body['created']),
             str(body['updated']),
             str(body['result']),
@@ -166,17 +161,16 @@ class Job(Model):
 
     def update_job(job_id, body):
         sql = "UPDATE `job` SET"
-        sql = sql + " hpc_job_id=%s, operation=%s, user_id=%s, name=%s, command=%s, job_meta_data=%s,"
-        sql = sql + " job_type=%s, created=%s, updated=%s, result=%s, log=%s, status=%s"
+        sql = sql + " hpc_job_id=%s, operation=%s, user_id=%s, name=%s, commands=%s, job_meta_data=%s,"
+        sql = sql + " created=%s, updated=%s, result=%s, log=%s, status=%s"
         sql = sql + " WHERE job_id=%s;"
         val = (
             str(body['hpcJobId']),
             str(body['operation']),
             str(body['userId']),
             str(body['name']),
-            str(body['command']),
+            str(body['commands']),
             str(body['jobMetaData']),
-            str(body['jobType']),
             str(body['created']),
             str(body['updated']),
             str(body['result']),
@@ -348,27 +342,27 @@ class Job(Model):
         self._name = name
 
     @property
-    def command(self) -> str:
-        """Gets the command of this Job.
+    def commands(self) -> Commands:
+        """Gets the commands of this Job.
 
 
-        :return: The command of this Job.
-        :rtype: str
+        :return: The commands of this Job.
+        :rtype: Commands
         """
-        return self._command
+        return self._commands
 
-    @command.setter
-    def command(self, command: str):
-        """Sets the command of this Job.
+    @commands.setter
+    def commands(self, commands: Commands):
+        """Sets the commands of this Job.
 
 
-        :param command: The command of this Job.
-        :type command: str
+        :param commands: The commands of this Job.
+        :type commands: Commands
         """
-        if command is None:
-            raise ValueError("Invalid value for `command`, must not be `None`")  # noqa: E501
+        if commands is None:
+            raise ValueError("Invalid value for `commands`, must not be `None`")  # noqa: E501
 
-        self._command = command
+        self._commands = commands
 
     @property
     def job_meta_data(self) -> JobMetadata:
@@ -390,35 +384,6 @@ class Job(Model):
         """
 
         self._job_meta_data = job_meta_data
-
-    @property
-    def job_type(self) -> str:
-        """Gets the job_type of this Job.
-
-        Job Type  # noqa: E501
-
-        :return: The job_type of this Job.
-        :rtype: str
-        """
-        return self._job_type
-
-    @job_type.setter
-    def job_type(self, job_type: str):
-        """Sets the job_type of this Job.
-
-        Job Type  # noqa: E501
-
-        :param job_type: The job_type of this Job.
-        :type job_type: str
-        """
-        allowed_values = ["hpc", "shell"]  # noqa: E501
-        if job_type not in allowed_values:
-            raise ValueError(
-                "Invalid value for `job_type` ({0}), must be one of {1}"
-                .format(job_type, allowed_values)
-            )
-
-        self._job_type = job_type
 
     @property
     def created(self) -> datetime:

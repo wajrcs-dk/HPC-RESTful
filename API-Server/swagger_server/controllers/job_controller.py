@@ -23,8 +23,8 @@ def add_job(body, access_token):  # noqa: E501
 
     :param name: Name of the job
     :type name: str
-    :param command: Command of the job
-    :type command: str
+    :param commands: commands of the job
+    :type commands: str
     :param job_meta_data: Metadata of the job
     :type job_meta_data: dict | bytes
     :param job_type: Type of the job
@@ -47,30 +47,65 @@ def add_job(body, access_token):  # noqa: E501
     
     now = time.strftime('%Y-%m-%d %H:%M:%S')
     jobMetaData = []
+    commands = []
     userId = 1
 
-    if not('jobMetaData' in body and 'name' in body and 'command' in body and 'jobType' in body):
+    if not('jobMetaData' in body and 'name' in body and 'commands' in body):
         error_code = 405
         error_message = {
-            "detail": 'Invalid input',
+            "detail": 'Invalid input, please provide jobMetaData, name and commands',
             "status": error_code,
             "title": "Invalid input",
             "type": "about:blank"
         }
         return error_message, error_code
 
-    if not('prerequisites' in body['jobMetaData'] and 'postrequisites' in body['jobMetaData'] and 'output' in body['jobMetaData']):
+    if not('error' in body['jobMetaData'] and 'output' in body['jobMetaData']):
         error_code = 405
         error_message = {
-            "detail": 'Invalid input',
+            "detail": 'Invalid input, please provide error and output in jobMetaData',
             "status": error_code,
             "title": "Invalid input",
             "type": "about:blank"
         }
         return error_message, error_code
+
+    if not(isinstance(body['commands'], list)):
+        error_code = 405
+        error_message = {
+            "detail": 'Invalid input, please provide commands as list',
+            "status": error_code,
+            "title": "Invalid input",
+            "type": "about:blank"
+        }
+        return error_message, error_code
+
+    hpc_cout = 0
+    for cmd in body['commands']:
+        if not('subJobType' in cmd and 'parameters' in cmd):
+            error_code = 405
+            error_message = {
+                "detail": 'Invalid input, please provide subJobType and parameters in commands',
+                "status": error_code,
+                "title": "Invalid input",
+                "type": "about:blank"
+            }
+            return error_message, error_code
+        if cmd['subJobType'] == 'hpc':
+                hpc_cout = hpc_cout + 1
+        if hpc_cout > 1:
+            error_code = 405
+            error_message = {
+                "detail": 'Invalid input, please provide only one subJobType=hpc in commands',
+                "status": error_code,
+                "title": "Invalid input",
+                "type": "about:blank"
+            }
+            return error_message, error_code
 
     try:
         jobMetaData = json.dumps(body['jobMetaData'])
+        commands = json.dumps(body['commands'])
     except Exception as e: # work on python 3.x
         error_code = 405
         error_message = {
@@ -86,9 +121,8 @@ def add_job(body, access_token):  # noqa: E501
         "operation": 'queue',
         "userId": userId,
         "name": body['name'],
-        "command": body['command'],
+        "commands": commands,
         "jobMetaData": jobMetaData,
-        "jobType": body['jobType'],
         "created": now,
         "updated": now,
         "result": '',
@@ -125,41 +159,34 @@ def add_job(body, access_token):  # noqa: E501
 
     row = row[0]
     jobMetaData = json.loads(row[6])
+    commands = json.loads(row[5])
     
     ind = 0
-    for prerequisites in jobMetaData['prerequisites']:
-        jobMetaData['prerequisites'][ind]['parameters'] = prerequisites['parameters'].replace('{jobId}', str(job_id))
-        ind = ind + 1
-    
-    ind = 0
-    for postrequisites in jobMetaData['postrequisites']:
-        jobMetaData['postrequisites'][ind]['parameters'] = postrequisites['parameters'].replace('{jobId}', str(job_id))
+    for cmd in commands:
+        commands[ind]['parameters'] = cmd['parameters'].replace('{jobId}', str(job_id))
         ind = ind + 1
 
     jobMetaData['output'] = jobMetaData['output'].replace('{jobId}', str(job_id))
-
-    print(row)
     
-    # command
-    command = row[5].replace('{jobId}', str(job_id))
+    # commands
     my_result = {
         "jobId": row[0],
         "hpcJobId": row[1],
         "operation": row[2],
         "userId": row[3],
         "name": row[4],
-        "command": command,
+        "commands": json.dumps(commands),
         "jobMetaData": json.dumps(jobMetaData),
-        "jobType": row[7],
-        "created": row[8],
-        "updated": row[9],
-        "result": row[10],
-        "log": row[11],
-        "status": row[12]
+        "created": row[7],
+        "updated": row[8],
+        "result": row[9],
+        "log": row[10],
+        "status": row[11]
     }
     Job.update_job(job_id, my_result)
     
     my_result['jobMetaData'] = jobMetaData
+    my_result['commands'] = commands
 
     if connexion.request.is_json:
         return my_result
@@ -281,8 +308,6 @@ def find_jobs_by_status(page_length, page_number, access_token, status=None):  #
             "type": "about:blank"
         }
         return error_message, error_code
-    
-    print(my_result_total)
 
     index = 0
     for row in my_result:
@@ -292,14 +317,13 @@ def find_jobs_by_status(page_length, page_number, access_token, status=None):  #
             "operation": row[2],
             "userId": row[3],
             "name": row[4],
-            "command": row[5],
+            "commands": json.loads(row[5]),
             "jobMetaData": json.loads(row[6]),
-            "jobType": row[7],
-            "created": row[8],
-            "updated": row[9],
-            "result": row[10],
-            "log": row[11],
-            "status": row[12]
+            "created": row[7],
+            "updated": row[8],
+            "result": row[9],
+            "log": row[10],
+            "status": row[11]
         }
         my_result[index] = row
         index = index + 1
@@ -356,14 +380,13 @@ def get_job_by_id(job_id, access_token):  # noqa: E501
             "operation": row[2],
             "userId": row[3],
             "name": row[4],
-            "command": row[5],
+            "commands": json.loads(row[5]),
             "jobMetaData": json.loads(row[6]),
-            "jobType": row[7],
-            "created": row[8],
-            "updated": row[9],
-            "result": row[10],
-            "log": row[11],
-            "status": row[12]
+            "created": row[7],
+            "updated": row[8],
+            "result": row[9],
+            "log": row[10],
+            "status": row[11]
         }
 
         if connexion.request.is_json:
@@ -425,7 +448,7 @@ def update_job(body, job_id, access_token):  # noqa: E501
 
     if len(row) == 1:
 
-        if not('prerequisites' in body['jobMetaData'] and 'postrequisites' in body['jobMetaData'] and 'output' in body['jobMetaData']):
+        if not('error' in body['jobMetaData'] and 'output' in body['jobMetaData']):
             error_code = 405
             error_message = {
                 "detail": 'Invalid input',
@@ -435,7 +458,42 @@ def update_job(body, job_id, access_token):  # noqa: E501
             }
             return error_message, error_code
 
+        if not(isinstance(body['commands'], list)):
+            error_code = 405
+            error_message = {
+                "detail": 'Invalid input, please provide commands as list',
+                "status": error_code,
+                "title": "Invalid input",
+                "type": "about:blank"
+            }
+            return error_message, error_code
+
+        hpc_cout = 0
+        for cmd in body['commands']:
+            if not('subJobType' in cmd and 'parameters' in cmd):
+                error_code = 405
+                error_message = {
+                    "detail": 'Invalid input, please provide subJobType and parameters in commands',
+                    "status": error_code,
+                    "title": "Invalid input",
+                    "type": "about:blank"
+                }
+                return error_message, error_code
+            if cmd['subJobType'] == 'hpc':
+                    hpc_cout = hpc_cout + 1
+            if hpc_cout > 1:
+                error_code = 405
+                error_message = {
+                    "detail": 'Invalid input, please provide only one subJobType=hpc in commands',
+                    "status": error_code,
+                    "title": "Invalid input",
+                    "type": "about:blank"
+                }
+                return error_message, error_code
+
+
         body['jobMetaData'] = json.dumps(body['jobMetaData'])
+        body['commands'] = json.dumps(body['commands'])
 
         if Job.update_job_status(row[0][12], body['status']):
             try:
@@ -452,6 +510,7 @@ def update_job(body, job_id, access_token):  # noqa: E501
             
             body['jobId'] = job_id
             body['jobMetaData'] = json.loads(body['jobMetaData'])
+            body['commands'] = json.loads(body['commands'])
             return body
         else:
             error_code = 409
@@ -531,14 +590,13 @@ def update_job_by_operation(job_id, operation, access_token):  # noqa: E501
             "operation": operation,
             "userId": row[3],
             "name": row[4],
-            "command": row[5],
+            "commands": json.loads(row[5]),
             "jobMetaData": json.loads(row[6]),
-            "jobType": row[7],
-            "created": row[8],
-            "updated": row[9],
-            "result": row[10],
-            "log": row[11],
-            "status": row[12]
+            "created": row[7],
+            "updated": row[8],
+            "result": row[9],
+            "log": row[10],
+            "status": row[11]
         }
 
         if connexion.request.is_json:
