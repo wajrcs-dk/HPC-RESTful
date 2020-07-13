@@ -24,13 +24,10 @@ class Job:
         job['created'] = now
         job['updated'] = now
         r = self.update_job(job['jobId'], access_token, job)
-        print (r)
         logger.log('Updated status', job)
 
     def mark_job_error(self, job, access_token, logger):
         job['status'] = 'cronjob_failed'
-        print (job)
-        print (access_token)
         self.update_job_status(job, access_token, logger)
 
     def run(self, cmd, print_result):
@@ -105,7 +102,6 @@ class Job:
                 logger.log('Error in cmd with code: "' + str(cmd_code) + '"', job)
                 logger.log('Error in cmd: "' + cmd_error.replace("\n", "|") + '"', job)
                 job['jobMetaData']['error'] = "Command: " + cmd_str + " ErrorCode: " + str(cmd_code) + " Output: " + cmd_output.replace("\n", "|") + " Error: " + cmd_error.replace("\n", "|")
-                print (access_token)
                 self.mark_job_error(job, access_token, logger)
                 return False
             else:
