@@ -8,6 +8,7 @@ from swagger_client import logger
 runner = True
 time_to_sleep = 5
 access_token = 'N9TT-9G0A-B7FQ-RANC'
+# 172.17.0.1
 URL = 'http://restapi:8080/Master-Thesis/HPC-RESTful/1.0.0/';
 BASE_PATH = '/data/jobs/'
 pageLength = 1

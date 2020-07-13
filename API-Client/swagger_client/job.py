@@ -157,13 +157,16 @@ class Job:
                 cmd_obj = cmd
                 break
 
-        logger.log('Running hpc command', job)
-        cmd_output = self.execute_cmd(job, cmd_obj, access_token, logger)
+        if 'subJobType' in cmd_obj:
+            logger.log('Running hpc command', job)
+            cmd_output = self.execute_cmd(job, cmd_obj, access_token, logger)
         
-        if cmd_output != False:
-            logger.log('Completed hpc command', job)
+            if cmd_output != False:
+                logger.log('Completed hpc command', job)
 
-        return cmd_output
+            return cmd_output
+        else:
+            return True
 
     def check_hpc_job_status(self, job, logger):
         ret = 0
@@ -218,7 +221,11 @@ class Job:
                 logger.log('Completed pre jobs', job)
                 
                 ret = self.process_job(job, access_token, logger)
-                if ret != False:
+                
+                if ret == True:
+                    job['status'] = 'completed'
+                    self.update_job_status(job, access_token, logger)
+                elif ret != False:
                     job['status'] = 'hpc_queued'
                     self.update_job_status(job, access_token, logger)
         
