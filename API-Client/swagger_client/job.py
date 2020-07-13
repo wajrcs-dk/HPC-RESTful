@@ -23,7 +23,8 @@ class Job:
         now = time.strftime('%Y-%m-%d %H:%M:%S')
         job['created'] = now
         job['updated'] = now
-        self.update_job(job['jobId'], access_token, job)
+        r = self.update_job(job['jobId'], access_token, job)
+        print (r)
         logger.log('Updated status', job)
 
     def mark_job_error(self, job, access_token, logger):
@@ -102,7 +103,7 @@ class Job:
             if cmd_code != 0:
                 logger.log('Error in cmd with code: "' + str(cmd_code) + '"', job)
                 logger.log('Error in cmd: "' + cmd_error + '"', job)
-                job['jobMetaData']['error'] = "Command: " + cmd_str + " ErrorCode: " + str(cmd_code) + " Output: " + cmd_output + " Error: " + cmd_error
+                job['jobMetaData']['error'] = "Command: " + cmd_str + " ErrorCode: " + str(cmd_code) + " Output: " + cmd_output.replace("\n", "|") + " Error: " + cmd_error
                 self.mark_job_error(job, access_token, logger)
                 return False
             else:
