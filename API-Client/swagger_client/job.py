@@ -172,13 +172,13 @@ class Job:
         else:
             return True
 
-    def check_hpc_job_status(self, job, logger):
+    def check_hpc_job_status(self, job, access_token, logger):
         ret = 0
         
         cmd_obj = {}
         cmd_obj['subJobType'] = 'hpc_status'
         cmd_obj['parameters'] = str(job['hpcJobId'])
-        result = self.execute_cmd(job, cmd_obj, '', logger)
+        result = self.execute_cmd(job, cmd_obj, access_token, logger)
 
         if result != False:
             result = result.split("\n")
@@ -234,7 +234,7 @@ class Job:
                     self.update_job_status(job, access_token, logger)
         
         if (job['status'] == 'hpc_queued'):
-            ret = self.check_hpc_job_status(job, logger)
+            ret = self.check_hpc_job_status(job, access_token, logger)
             if ret == 1:
                 job['status'] = 'hpc_in_progress'
                 self.update_job_status(job, access_token, logger)
@@ -249,7 +249,7 @@ class Job:
                 self.update_job_status(job, access_token, logger)
         
         if (job['status'] == 'hpc_in_progress'):
-            ret = self.check_hpc_job_status(job, logger)
+            ret = self.check_hpc_job_status(job, access_token, logger)
             if ret == 2:
                 job['status'] = 'completed'
                 self.update_job_status(job, access_token, logger)
