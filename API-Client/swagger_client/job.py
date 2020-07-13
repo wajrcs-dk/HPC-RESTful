@@ -28,6 +28,7 @@ class Job:
 
     def mark_job_error(self, job, access_token, logger):
         job['status'] = 'cronjob_failed'
+        print job
         self.update_job_status(job, access_token, logger)
 
     def run(self, cmd, print_result):
