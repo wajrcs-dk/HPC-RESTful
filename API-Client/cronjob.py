@@ -42,8 +42,8 @@ while runner:
 
                     completed = jobObj.execute_job(job_db, access_token, logger)
 
-                    if os.path.exists(BASE_PATH + str(job['jobId']) + '/'):
-                        shutil.rmtree(BASE_PATH + str(job['jobId']) + '/')
+                    if os.path.exists(BASE_PATH + str(job_db['jobId']) + '/'):
+                        shutil.rmtree(BASE_PATH + str(job_db['jobId']) + '/')
             else:
                 logger.log('No job found')
             logger.log('Processed jobs with page ' + str(pageNumber))
