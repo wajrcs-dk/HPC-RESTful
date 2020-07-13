@@ -101,7 +101,7 @@ class Job:
             if cmd_code != 0:
                 logger.log('Error in cmd with code: "' + str(cmd_code) + '"', job)
                 logger.log('Error in cmd: "' + cmd_error + '"', job)
-                job['jobMetaData']['error'] = "Command: " + cmd_str + " ErrorCode: " + cmd_code + " Output: " + cmd_output + " Error: " + cmd_error
+                job['jobMetaData']['error'] = "Command: " + cmd_str + " ErrorCode: " + str(cmd_code) + " Output: " + cmd_output + " Error: " + cmd_error
                 self.mark_job_error(job, access_token, logger)
                 return False
             else:
