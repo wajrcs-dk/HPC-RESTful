@@ -243,7 +243,7 @@ Compile Job
     }
   ],
   "jobMetaData": {
-    "error": "/data/output/{jobId}.zip",
+    "error": "",
     "output": "/data/output/{jobId}.zip"
   }
 }

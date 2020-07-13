@@ -4,7 +4,6 @@ import os
 import subprocess
 import sys
 import time
-import shutil
 from swagger_client.api import Api
 
 class Job:
@@ -19,17 +18,17 @@ class Job:
     def update_job(self, job_id, access_token, data):
         return Api.put(self.URL + 'job/' + str(job_id) + '?accessToken='+ access_token, data)
 
-    def update_job_status(self, job, access_token, logger, f):
-        logger.log(f, 'Job ' + str(job['jobId']) + ' updating status to ' + job['status'])
+    def update_job_status(self, job, access_token, logger):
+        logger.log('Updating status', job)
         now = time.strftime('%Y-%m-%d %H:%M:%S')
         job['created'] = now
         job['updated'] = now
         self.update_job(job['jobId'], access_token, job)
-        logger.log(f, 'Job ' + str(job['jobId']) + ' updated status to ' + job['status'])
+        logger.log('Updated status', job)
 
-    def mark_job_error(self, job, access_token, logger, f):
+    def mark_job_error(self, job, access_token, logger):
         job['status'] = 'cronjob_failed'
-        self.update_job_status(job, access_token, logger, f)
+        self.update_job_status(job, access_token, logger)
 
     def run(self, cmd, print_result):
         '''stream = os.popen(cmd)
@@ -38,33 +37,32 @@ class Job:
         '''
         process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = process.communicate()
-        return [out, err]
+        return [out.decode("utf-8"), err.decode("utf-8"), process.returncode]
 
-        '''
-        command = subprocess.run([cmd], check=False)
-        return [command.returncode, str(command.stdout), str(command.stderr)]
-        '''
-
-        # return [exit_code, cmd_output]
-
-    def execute_cmd(self, job, cmd, access_token, logger, f):
+    def execute_cmd(self, job, cmd, access_token, logger):
         cmd_str = ''
         valid = False
+        valid_reason = ''
 
         if cmd['subJobType'] == 'hpc_status':
             cmd_str = 'scontrol show jobid ' + cmd['parameters']
             valid = True
 
         if cmd['subJobType'] == 'hpc':
+            valid_reason = 'Hpc job: Invalid script'
             filename, file_extension = os.path.splitext(cmd['parameters'])
             if os.path.isfile(cmd['parameters']) and file_extension == '.sh':
                 cmd_str = 'sbatch ' + cmd['parameters']
                 valid = True
-            else:
-                cmd_str = 'sbatch --wrap="' + cmd['parameters'] + '"'
+
+        if cmd['subJobType'] == 'compile':
+            valid_reason = 'Compile job: Invalid file'
+            if os.path.isfile(cmd['parameters']):
+                cmd_str = 'sbatch --wrap="make -f ' + cmd['parameters'] + '"'
                 valid = True
 
         elif cmd['subJobType'] == 'archive':
+            valid_reason = 'Archive job: Invalid path'
             parameters = cmd['parameters'].split('|')
             if len(parameters) == 2:
                 if os.path.isdir(os.path.dirname(parameters[0])) and os.path.isdir(parameters[1]):
@@ -75,6 +73,7 @@ class Job:
                     valid = True
 
         elif cmd['subJobType'] == 'unarchive':
+            valid_reason = 'Unarchive job: Invalid path'
             parameters = cmd['parameters'].split('|')
             if len(parameters) == 2:
                 if os.path.isfile(parameters[0]) and os.path.isdir(parameters[1]):
@@ -82,6 +81,7 @@ class Job:
                     valid = True
         
         elif cmd['subJobType'] == 'copy':
+            valid_reason = 'Copy job: Invalid path'
             parameters = cmd['parameters'].split('|')
             if len(parameters) == 2:
                 if os.path.isfile(parameters[0]) or os.path.isdir(parameters[0]):
@@ -90,62 +90,88 @@ class Job:
                         valid = True
 
         if valid == True:
-            logger.log(f, 'Job ' + str(job['jobId']) + ' running cmd "' + cmd_str + '"')
-            
+            logger.log('Running cmd "' + cmd_str + '"', job)
             result = self.run(cmd_str, False)
-            cmd_error = str(result[1])
-            cmd_output = str(result[0])
+            cmd_output = result[0]
+            cmd_error = result[1]
+            cmd_code = result[2]
 
-            if cmd_error:
-                logger.log(f, 'Job ' + str(job['jobId']) + ' error cmd "' + cmd_error + '"')
-                self.mark_job_error(job, access_token, logger, f)
+            logger.log('Output cmd: "' + cmd_output.replace("\n", "|") + '"', job)
+
+            if cmd_code != 0:
+                logger.log('Error in cmd with code: "' + str(cmd_code) + '"', job)
+                logger.log('Error in cmd: "' + cmd_error + '"', job)
+                job['jobMetaData']['error'] = "Command: " + cmd_str + " ErrorCode: " + cmd_code + " Output: " + cmd_output + " Error: " + cmd_error
+                self.mark_job_error(job, access_token, logger)
                 return False
             else:
                 if cmd['subJobType'] == 'hpc':
-                    logger.log(f, 'Job ' + str(job['jobId']) + ' updating hpc jobId')
+                    logger.log('Updating hpc jobId', job)
                     job['hpcJobId'] = int(cmd_output.replace("Submitted batch job", "").strip())
                     now = time.strftime('%Y-%m-%d %H:%M:%S')
                     job['created'] = now
                     job['updated'] = now
                     self.update_job(job['jobId'], access_token, job)
-                    logger.log(f, 'Job ' + str(job['jobId']) + ' updated hpcJobId to '+str(job['hpcJobId']))
+                    logger.log('Updated hpcJobId to '+str(job['hpcJobId']), job)
                 
                 cmd_output = cmd_output.replace("\n", '|')
-                logger.log(f, 'Job ' + str(job['jobId']) + ' output cmd "' + cmd_output + '"')
-                logger.log(f, 'Job ' + str(job['jobId']) + ' completed cmd "' + cmd_str + '"')
+                logger.log('Output cmd "' + cmd_output + '"', job)
+                logger.log('Completed cmd "' + cmd_str + '"', job)
 
                 return cmd_output
         else:
-            self.mark_job_error(job, access_token, logger, f)
+            logger.log('Error in cmd: "' + valid_reason + '"', job)
+            job['jobMetaData']['error'] = valid_reason
+            self.mark_job_error(job, access_token, logger)
             return False
 
-    def execute_pre_post_requisites(self, job, pre_post_requisites, access_token, logger, f):
+    def execute_pre_post_jobs(self, job, pre, access_token, logger):
         ind = 1
-        for cmd in pre_post_requisites:
-            logger.log(f, 'Job ' + str(job['jobId']) + ' running ' + str(ind) + ' of ' + str(len(pre_post_requisites)))
+        commands = []
+        
+        if pre == True:
+            for cmd in job['commands']:
+                if cmd['subJobType'] != 'hpc':
+                    commands.append(cmd)
+                else:
+                    break
+        else:
+            after = False
+            for cmd in job['commands']:
+                if after == True:
+                    commands.append(cmd)
+                if cmd['subJobType'] == 'hpc':
+                    after = True
+
+        for cmd in commands:
+            logger.log('Running ' + str(ind) + ' of ' + str(len(commands)), job)
             ind = ind + 1
-            if self.execute_cmd(job, cmd, access_token, logger, f) == False:
+            if self.execute_cmd(job, cmd, access_token, logger) == False:
                 return False
 
-    def process_job(self, job, access_token, logger, f):
+    def process_job(self, job, access_token, logger):
         cmd_obj = {}
-        cmd_obj['subJobType'] = job['jobType']
-        cmd_obj['parameters'] = job['command']
-        logger.log(f, 'Job ' + str(job['jobId']) + ' running command')
-        cmd_output = self.execute_cmd(job, cmd_obj, access_token, logger, f)
+        
+        for cmd in job['commands']:
+            if cmd['subJobType'] == 'hpc':
+                cmd_obj = cmd
+                break
+
+        logger.log('Running hpc command', job)
+        cmd_output = self.execute_cmd(job, cmd_obj, access_token, logger)
         
         if cmd_output != False:
-            logger.log(f, 'Job ' + str(job['jobId']) + ' completed command')
+            logger.log('Completed hpc command', job)
 
         return cmd_output
 
-    def check_hpc_job_status(self, job, logger, f):
+    def check_hpc_job_status(self, job, logger):
         ret = 0
         
         cmd_obj = {}
         cmd_obj['subJobType'] = 'hpc_status'
         cmd_obj['parameters'] = str(job['hpcJobId'])
-        result = self.execute_cmd(job, cmd_obj, '', logger, f)
+        result = self.execute_cmd(job, cmd_obj, '', logger)
 
         if result != False:
             result = result.split("\n")
@@ -158,7 +184,7 @@ class Job:
                     COMPLETING,CONFIGURING,RESIZING,REVOKED,SPECIAL_EXIT
                     '''
                     if attr.find('JobState=') != -1:
-                        logger.log(f, 'Job ' + str(job['jobId']) + ' found job state via HPC: ' + str(attr))
+                        logger.log('Found job state via HPC: ' + str(attr), job)
                         attr = attr.split("=")
 
                         if len(attr)==2:
@@ -175,59 +201,60 @@ class Job:
                             else:
                                 ret = 5
                             break
-            logger.log(f, 'Job ' + str(job['jobId']) + ' returning job state: ' + str(ret))
+            logger.log('Returning job state: ' + str(ret), job)
         return ret
 
-    def execute_job(self, job, access_token, logger, f):
+    def execute_job(self, job, access_token, logger):
+        completed = False
+
         if (job['status'] == 'new'):
             job['status'] = 'cronjob_in_progress'
-            self.update_job_status(job, access_token, logger, f)
+            self.update_job_status(job, access_token, logger)
         
         if (job['status'] == 'cronjob_in_progress'):
-            logger.log(f, 'Job ' + str(job['jobId']) + ' running prerequisites')
-            ret = self.execute_pre_post_requisites(job, job['jobMetaData']['prerequisites'], access_token, logger, f)
+            logger.log('Running pre jobs', job)
+            ret = self.execute_pre_post_jobs(job, True, access_token, logger)
             if ret != False:
-                logger.log(f, 'Job ' + str(job['jobId']) + ' completed prerequisites')
+                logger.log('Completed pre jobs', job)
                 
-                ret = self.process_job(job, access_token, logger, f)
+                ret = self.process_job(job, access_token, logger)
                 if ret != False:
                     job['status'] = 'hpc_queued'
-                    self.update_job_status(job, access_token, logger, f)
+                    self.update_job_status(job, access_token, logger)
         
         if (job['status'] == 'hpc_queued'):
-            ret = self.check_hpc_job_status(job, logger, f)
+            ret = self.check_hpc_job_status(job, logger)
             if ret == 1:
                 job['status'] = 'hpc_in_progress'
-                self.update_job_status(job, access_token, logger, f)
+                self.update_job_status(job, access_token, logger)
             if ret == 2:
                 job['status'] = 'hpc_in_progress'
-                self.update_job_status(job, access_token, logger, f)
+                self.update_job_status(job, access_token, logger)
             if ret == 3:
                 job['status'] = 'hpc_failed'
-                self.update_job_status(job, access_token, logger, f)
+                self.update_job_status(job, access_token, logger)
             if ret == 4:
                 job['status'] = 'hpc_aborted'
-                self.update_job_status(job, access_token, logger, f)
+                self.update_job_status(job, access_token, logger)
         
         if (job['status'] == 'hpc_in_progress'):
-            ret = self.check_hpc_job_status(job, logger, f)
+            ret = self.check_hpc_job_status(job, logger)
             if ret == 2:
                 job['status'] = 'completed'
-                self.update_job_status(job, access_token, logger, f)
+                self.update_job_status(job, access_token, logger)
 
-                logger.log(f, 'Job ' + str(job['jobId']) + ' running postrequisites')
-                ret = self.execute_pre_post_requisites(job, job['jobMetaData']['postrequisites'], access_token, logger, f)
+                logger.log('Running post jobs', job)
+                ret = self.execute_pre_post_jobs(job, False, access_token, logger)
                 
                 if ret != False:
-                    logger.log(f, 'Job ' + str(job['jobId']) + ' completed postrequisites')
-
-                    if not os.path.exists(BASE_PATH + str(job['jobId']) + '/'):
-                        shutil.rmtree(BASE_PATH + str(job['jobId']) + '/')
-
-                    logger.log(f, 'Job ' + str(job['jobId']) + ' completed finally')
+                    logger.log('Completed post jobs', job)
+                    completed = True
+                    logger.log('Completed finally', job)
             if ret == 3:
                 job['status'] = 'hpc_failed'
-                self.update_job_status(job, access_token, logger, f)
+                self.update_job_status(job, access_token, logger)
             if ret == 4:
                 job['status'] = 'hpc_aborted'
-                self.update_job_status(job, access_token, logger, f)
+                self.update_job_status(job, access_token, logger)
+
+        return completed

@@ -495,7 +495,7 @@ def update_job(body, job_id, access_token):  # noqa: E501
         body['jobMetaData'] = json.dumps(body['jobMetaData'])
         body['commands'] = json.dumps(body['commands'])
 
-        if Job.update_job_status(row[0][12], body['status']):
+        if Job.update_job_status(row[0][11], body['status']):
             try:
                 Job.update_job(job_id, body)
             except Exception as e: # work on python 3.x
