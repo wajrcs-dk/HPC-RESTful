@@ -235,6 +235,26 @@ Compile Job
       "subJobType": "unarchive",
       "parameters": "/data/input/HelloWorld.zip|/data/jobs/{jobId}/"
     }, {
+      "subJobType": "hpc",
+      "parameters": "/data/input/MyScript.sh"
+    }, {
+      "subJobType": "archive",
+      "parameters": "/data/output/{jobId}.zip|/data/jobs/{jobId}/"
+    }
+  ],
+  "jobMetaData": {
+    "error": "",
+    "output": "/data/output/{jobId}.zip"
+  }
+}
+
+{
+  "name": "Compile v1",
+  "commands": [
+    {
+      "subJobType": "unarchive",
+      "parameters": "/data/input/HelloWorld.zip|/data/jobs/{jobId}/"
+    }, {
       "subJobType": "archive",
       "parameters": "/data/output/{jobId}.zip|/data/jobs/{jobId}/"
     }
