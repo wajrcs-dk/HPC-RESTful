@@ -26,8 +26,11 @@ class Job:
         r = self.update_job(job['jobId'], access_token, job)
         logger.log('Updated status', job)
 
-    def mark_job_error(self, job, access_token, logger):
-        job['status'] = 'cronjob_failed'
+    def mark_job_error(self, job, subJobType, access_token, logger):
+        if subJobType == 'hpc_status':
+            job['status'] = 'hpc_failed'
+        else:
+            job['status'] = 'cronjob_failed'
         self.update_job_status(job, access_token, logger)
 
     def run(self, cmd, print_result):
@@ -102,7 +105,7 @@ class Job:
                 logger.log('Error in cmd with code: "' + str(cmd_code) + '"', job)
                 logger.log('Error in cmd: "' + cmd_error.replace("\n", "|") + '"', job)
                 job['jobMetaData']['error'] = "Command: " + cmd_str + " ErrorCode: " + str(cmd_code) + " Output: " + cmd_output.replace("\n", "|") + " Error: " + cmd_error.replace("\n", "|")
-                self.mark_job_error(job, access_token, logger)
+                self.mark_job_error(job, cmd['subJobType'], access_token, logger)
                 return False
             else:
                 if cmd['subJobType'] == 'hpc':
@@ -122,7 +125,7 @@ class Job:
         else:
             logger.log('Error in cmd: "' + valid_reason + '"', job)
             job['jobMetaData']['error'] = valid_reason
-            self.mark_job_error(job, access_token, logger)
+            self.mark_job_error(job, cmd['subJobType'], access_token, logger)
             return False
 
     def execute_pre_post_jobs(self, job, pre, access_token, logger):
@@ -219,9 +222,7 @@ class Job:
             ret = self.execute_pre_post_jobs(job, True, access_token, logger)
             if ret != False:
                 logger.log('Completed pre jobs', job)
-                
                 ret = self.process_job(job, access_token, logger)
-                
                 if ret == True:
                     job['status'] = 'completed'
                     self.update_job_status(job, access_token, logger)

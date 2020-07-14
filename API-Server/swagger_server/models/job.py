@@ -118,6 +118,9 @@ class Job(Model):
         if old_status=='hpc_queued' and new_status=='hpc_aborted':
             ret = True
 
+        if old_status=='hpc_queued' and new_status=='hpc_failed':
+            ret = True
+
         if old_status=='hpc_in_progress' and new_status=='hpc_failed':
             ret = True
 
