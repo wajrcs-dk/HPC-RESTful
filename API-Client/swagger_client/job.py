@@ -61,7 +61,7 @@ class Job:
         if cmd['subJobType'] == 'compile':
             valid_reason = 'Compile job: Invalid file'
             if os.path.isfile(cmd['parameters']):
-                cmd_str = 'sbatch --wrap="make -f ' + cmd['parameters'] + '"'
+                cmd_str = 'sbatch --wrap="make -C ' + os.path.dirname(cmd['parameters']) + '"'
                 valid = True
 
         elif cmd['subJobType'] == 'archive':
