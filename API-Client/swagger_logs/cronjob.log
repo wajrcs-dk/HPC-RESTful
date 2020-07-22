@@ -1821,3 +1821,122 @@
 2020-07-13 17:47:55: Processing jobs with page 1
 2020-07-13 17:47:55: No job found
 2020-07-13 17:47:55: Processed jobs with page 1
+2020-07-22 11:48:48: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:48:48: Processing jobs with page 1
+2020-07-22 11:48:48: No job found
+2020-07-22 11:48:48: Processed jobs with page 1
+2020-07-22 11:48:53: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:48:53: Processing jobs with page 1
+2020-07-22 11:48:53: No job found
+2020-07-22 11:48:53: Processed jobs with page 1
+2020-07-22 11:48:58: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:48:58: Processing jobs with page 1
+2020-07-22 11:48:58: No job found
+2020-07-22 11:48:58: Processed jobs with page 1
+2020-07-22 11:49:03: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:49:03: Processing jobs with page 1
+2020-07-22 11:49:03: No job found
+2020-07-22 11:49:03: Processed jobs with page 1
+2020-07-22 11:49:08: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:49:08: Processing jobs with page 1
+2020-07-22 11:49:08: No job found
+2020-07-22 11:49:08: Processed jobs with page 1
+2020-07-22 11:49:13: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:49:13: Processing jobs with page 1
+2020-07-22 11:49:13: No job found
+2020-07-22 11:49:13: Processed jobs with page 1
+2020-07-22 11:49:18: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:49:18: Processing jobs with page 1
+2020-07-22 11:49:18: No job found
+2020-07-22 11:49:18: Processed jobs with page 1
+2020-07-22 11:49:23: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:49:23: Processing jobs with page 1
+2020-07-22 11:49:23: No job found
+2020-07-22 11:49:23: Processed jobs with page 1
+2020-07-22 11:49:28: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:49:28: Processing jobs with page 1
+2020-07-22 11:49:28: No job found
+2020-07-22 11:49:28: Processed jobs with page 1
+2020-07-22 11:49:33: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:49:33: Processing jobs with page 1
+2020-07-22 11:49:33: No job found
+2020-07-22 11:49:33: Processed jobs with page 1
+2020-07-22 11:49:38: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:49:38: Processing jobs with page 1
+2020-07-22 11:49:38: No job found
+2020-07-22 11:49:38: Processed jobs with page 1
+2020-07-22 11:49:43: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:49:43: Processing jobs with page 1
+2020-07-22 11:49:43: No job found
+2020-07-22 11:49:43: Processed jobs with page 1
+2020-07-22 11:49:48: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:49:48: Processing jobs with page 1
+2020-07-22 11:50:38: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:50:38: Processing jobs with page 1
+2020-07-22 11:50:59: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:50:59: Processing jobs with page 1
+2020-07-22 11:50:59: Job [66][new] Processing job
+2020-07-22 11:51:16: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:51:16: Processing jobs with page 1
+2020-07-22 11:51:16: Job [66][new] Processing job
+2020-07-22 11:51:16: Job [66][cronjob_in_progress] Updating status
+2020-07-22 11:51:16: Job [66][cronjob_in_progress] Updated status
+2020-07-22 11:51:16: Job [66][cronjob_in_progress] Running pre jobs
+2020-07-22 11:51:16: Job [66][cronjob_in_progress] Running 1 of 3
+2020-07-22 11:51:16: Job [66][cronjob_in_progress] Running cmd "unzip /data/input/HelloWorld.zip -d /data/jobs/66/"
+2020-07-22 11:51:16: Job [66][cronjob_in_progress] Output cmd: "Archive:  /data/input/HelloWorld.zip|  inflating: /data/jobs/66/HelloWorld.c  |"
+2020-07-22 11:51:16: Job [66][cronjob_in_progress] Output cmd "Archive:  /data/input/HelloWorld.zip|  inflating: /data/jobs/66/HelloWorld.c  |"
+2020-07-22 11:51:16: Job [66][cronjob_in_progress] Completed cmd "unzip /data/input/HelloWorld.zip -d /data/jobs/66/"
+2020-07-22 11:51:16: Job [66][cronjob_in_progress] Running 2 of 3
+2020-07-22 11:51:17: Job [66][cronjob_in_progress] Error in cmd: "Compile job: Invalid file"
+2020-07-22 11:51:17: Job [66][cronjob_failed] Updating status
+2020-07-22 11:51:17: Job [66][cronjob_failed] Updated status
+2020-07-22 11:51:17: Processed jobs with page 1
+2020-07-22 11:51:22: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:51:22: Processing jobs with page 1
+2020-07-22 11:51:22: No job found
+2020-07-22 11:51:22: Processed jobs with page 1
+2020-07-22 11:51:27: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:51:27: Processing jobs with page 1
+2020-07-22 11:51:27: No job found
+2020-07-22 11:51:27: Processed jobs with page 1
+2020-07-22 11:51:32: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:51:32: Processing jobs with page 1
+2020-07-22 11:51:32: No job found
+2020-07-22 11:51:32: Processed jobs with page 1
+2020-07-22 11:51:37: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:51:37: Processing jobs with page 1
+2020-07-22 11:51:37: No job found
+2020-07-22 11:51:37: Processed jobs with page 1
+2020-07-22 11:51:42: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:51:42: Processing jobs with page 1
+2020-07-22 11:51:42: No job found
+2020-07-22 11:51:42: Processed jobs with page 1
+2020-07-22 11:51:47: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:51:47: Processing jobs with page 1
+2020-07-22 11:51:47: No job found
+2020-07-22 11:51:47: Processed jobs with page 1
+2020-07-22 11:51:52: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:51:52: Processing jobs with page 1
+2020-07-22 11:51:52: No job found
+2020-07-22 11:51:52: Processed jobs with page 1
+2020-07-22 11:51:57: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:51:57: Processing jobs with page 1
+2020-07-22 11:51:57: No job found
+2020-07-22 11:51:57: Processed jobs with page 1
+2020-07-22 11:52:02: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:52:02: Processing jobs with page 1
+2020-07-22 11:52:02: No job found
+2020-07-22 11:52:02: Processed jobs with page 1
+2020-07-22 11:52:07: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:52:07: Processing jobs with page 1
+2020-07-22 11:52:07: No job found
+2020-07-22 11:52:07: Processed jobs with page 1
+2020-07-22 11:52:24: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:52:24: Processing jobs with page 1
+2020-07-22 11:52:24: No job found
+2020-07-22 11:52:24: Processed jobs with page 1
+2020-07-22 11:52:29: Getting jobs for page: "1" Total pages: "1"
+2020-07-22 11:52:29: Processing jobs with page 1
+2020-07-22 11:52:29: No job found
+2020-07-22 11:52:29: Processed jobs with page 1

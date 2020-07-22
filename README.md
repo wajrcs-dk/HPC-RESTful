@@ -235,6 +235,26 @@ Compile Job
       "subJobType": "unarchive",
       "parameters": "/data/input/HelloWorld.zip|/data/jobs/{jobId}/"
     }, {
+      "subJobType": "compile",
+      "parameters": "/data/repo/API-Example/HelloWorld/Source/Makefile"
+    }, {
+      "subJobType": "archive",
+      "parameters": "/data/output/{jobId}.zip|/data/jobs/{jobId}/"
+    }
+  ],
+  "jobMetaData": {
+    "error": "",
+    "output": "/data/output/{jobId}.zip"
+  }
+}
+
+{
+  "name": "Compile v1",
+  "commands": [
+    {
+      "subJobType": "unarchive",
+      "parameters": "/data/input/HelloWorld.zip|/data/jobs/{jobId}/"
+    }, {
       "subJobType": "hpc",
       "parameters": "/data/input/MyScript.sh"
     }, {
@@ -327,6 +347,8 @@ Bash Job
 
 -------------------------
 
+https://www.gwdg.de/server-services/gwdg-cloud-server 
+
 Archive Job
 
 {
@@ -347,3 +369,9 @@ Archive Job
 }
 
 
+------------------------------------
+
+
+Server created
+The password is shown in the VNC shell until you logged in for the first time. Please keep the password and store it in a safe place.
+User: cloudPassword: (VNC)

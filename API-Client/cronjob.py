@@ -17,7 +17,7 @@ logger = logger.Logger()
 while runner:
     pageNumber = 1
     totalPages = 1
-    jobObj = job.Job(URL)
+    jobObj = job.Job(URL, access_token)
     logger.log_open()
 
     while pageNumber <= totalPages:
@@ -40,7 +40,7 @@ while runner:
                     if not os.path.exists(BASE_PATH + str(job_db['jobId']) + '/'):
                         os.makedirs(BASE_PATH + str(job_db['jobId']) + '/')
 
-                    completed = jobObj.execute_job(job_db, access_token, logger)
+                    completed = jobObj.execute_job(job_db, logger)
 
                     if os.path.exists(BASE_PATH + str(job_db['jobId']) + '/'):
                         shutil.rmtree(BASE_PATH + str(job_db['jobId']) + '/')

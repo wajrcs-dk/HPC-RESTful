@@ -9,29 +9,34 @@ from swagger_client.api import Api
 class Job:
 
     # Constructor method with instance variables name and age
-    def __init__(self, URL):
+    def __init__(self, URL, access_token):
         self.URL = URL
+        self.access_token = access_token
 
     def find_jobs_by_status(self, params):
         return Api.get(self.URL + 'job/findJobsByStatus', params)
 
-    def update_job(self, job_id, access_token, data):
-        return Api.put(self.URL + 'job/' + str(job_id) + '?accessToken='+ access_token, data)
+    def update_job(self, job_id, data):
+        return Api.put(self.URL + 'job/' + str(job_id) + '?accessToken='+ self.access_token, data)
 
-    def update_job_status(self, job, access_token, logger):
+    def update_job_logs(self, job, log):
+        job['log'] = job['log'] + log + "\n"
+        r = self.update_job(job['jobId'], job)
+
+    def update_job_status(self, job, logger):
         logger.log('Updating status', job)
         now = time.strftime('%Y-%m-%d %H:%M:%S')
         job['created'] = now
         job['updated'] = now
-        r = self.update_job(job['jobId'], access_token, job)
+        r = self.update_job(job['jobId'], job)
         logger.log('Updated status', job)
 
-    def mark_job_error(self, job, subJobType, access_token, logger):
+    def mark_job_error(self, job, subJobType, logger):
         if subJobType == 'hpc_status':
             job['status'] = 'hpc_failed'
         else:
             job['status'] = 'cronjob_failed'
-        self.update_job_status(job, access_token, logger)
+        self.update_job_status(job, logger)
 
     def run(self, cmd, print_result):
         '''stream = os.popen(cmd)
@@ -42,7 +47,7 @@ class Job:
         out, err = process.communicate()
         return [out.decode("utf-8"), err.decode("utf-8"), process.returncode]
 
-    def execute_cmd(self, job, cmd, access_token, logger):
+    def execute_cmd(self, job, cmd, logger):
         cmd_str = ''
         valid = False
         valid_reason = ''
@@ -105,7 +110,7 @@ class Job:
                 logger.log('Error in cmd with code: "' + str(cmd_code) + '"', job)
                 logger.log('Error in cmd: "' + cmd_error.replace("\n", "|") + '"', job)
                 job['jobMetaData']['error'] = "Command: " + cmd_str + " ErrorCode: " + str(cmd_code) + " Output: " + cmd_output.replace("\n", "|") + " Error: " + cmd_error.replace("\n", "|")
-                self.mark_job_error(job, cmd['subJobType'], access_token, logger)
+                self.mark_job_error(job, cmd['subJobType'], logger)
                 return False
             else:
                 if cmd['subJobType'] == 'hpc':
@@ -114,7 +119,7 @@ class Job:
                     now = time.strftime('%Y-%m-%d %H:%M:%S')
                     job['created'] = now
                     job['updated'] = now
-                    self.update_job(job['jobId'], access_token, job)
+                    self.update_job(job['jobId'], job)
                     logger.log('Updated hpcJobId to '+str(job['hpcJobId']), job)
                 
                 cmd_output = cmd_output.replace("\n", '|')
@@ -125,10 +130,10 @@ class Job:
         else:
             logger.log('Error in cmd: "' + valid_reason + '"', job)
             job['jobMetaData']['error'] = valid_reason
-            self.mark_job_error(job, cmd['subJobType'], access_token, logger)
+            self.mark_job_error(job, cmd['subJobType'], logger)
             return False
 
-    def execute_pre_post_jobs(self, job, pre, access_token, logger):
+    def execute_pre_post_jobs(self, job, pre, logger):
         ind = 1
         commands = []
         
@@ -149,10 +154,10 @@ class Job:
         for cmd in commands:
             logger.log('Running ' + str(ind) + ' of ' + str(len(commands)), job)
             ind = ind + 1
-            if self.execute_cmd(job, cmd, access_token, logger) == False:
+            if self.execute_cmd(job, cmd, logger) == False:
                 return False
 
-    def process_job(self, job, access_token, logger):
+    def process_job(self, job, logger):
         cmd_obj = {}
         
         for cmd in job['commands']:
@@ -162,7 +167,7 @@ class Job:
 
         if 'subJobType' in cmd_obj:
             logger.log('Running hpc command', job)
-            cmd_output = self.execute_cmd(job, cmd_obj, access_token, logger)
+            cmd_output = self.execute_cmd(job, cmd_obj, logger)
         
             if cmd_output != False:
                 logger.log('Completed hpc command', job)
@@ -171,13 +176,13 @@ class Job:
         else:
             return True
 
-    def check_hpc_job_status(self, job, access_token, logger):
+    def check_hpc_job_status(self, job, logger):
         ret = 0
         
         cmd_obj = {}
         cmd_obj['subJobType'] = 'hpc_status'
         cmd_obj['parameters'] = str(job['hpcJobId'])
-        result = self.execute_cmd(job, cmd_obj, access_token, logger)
+        result = self.execute_cmd(job, cmd_obj, logger)
 
         if result != False:
             result = result.split("\n")
@@ -210,49 +215,49 @@ class Job:
             logger.log('Returning job state: ' + str(ret), job)
         return ret
 
-    def execute_job(self, job, access_token, logger):
+    def execute_job(self, job, logger):
         completed = False
 
         if (job['status'] == 'new'):
             job['status'] = 'cronjob_in_progress'
-            self.update_job_status(job, access_token, logger)
+            self.update_job_status(job, logger)
         
         if (job['status'] == 'cronjob_in_progress'):
             logger.log('Running pre jobs', job)
-            ret = self.execute_pre_post_jobs(job, True, access_token, logger)
+            ret = self.execute_pre_post_jobs(job, True, logger)
             if ret != False:
                 logger.log('Completed pre jobs', job)
-                ret = self.process_job(job, access_token, logger)
+                ret = self.process_job(job, logger)
                 if ret == True:
                     job['status'] = 'completed'
-                    self.update_job_status(job, access_token, logger)
+                    self.update_job_status(job, logger)
                 elif ret != False:
                     job['status'] = 'hpc_queued'
-                    self.update_job_status(job, access_token, logger)
+                    self.update_job_status(job, logger)
         
         if (job['status'] == 'hpc_queued'):
-            ret = self.check_hpc_job_status(job, access_token, logger)
+            ret = self.check_hpc_job_status(job, logger)
             if ret == 1:
                 job['status'] = 'hpc_in_progress'
-                self.update_job_status(job, access_token, logger)
+                self.update_job_status(job, logger)
             if ret == 2:
                 job['status'] = 'hpc_in_progress'
-                self.update_job_status(job, access_token, logger)
+                self.update_job_status(job, logger)
             if ret == 3:
                 job['status'] = 'hpc_failed'
-                self.update_job_status(job, access_token, logger)
+                self.update_job_status(job, logger)
             if ret == 4:
                 job['status'] = 'hpc_aborted'
-                self.update_job_status(job, access_token, logger)
+                self.update_job_status(job, logger)
         
         if (job['status'] == 'hpc_in_progress'):
-            ret = self.check_hpc_job_status(job, access_token, logger)
+            ret = self.check_hpc_job_status(job, logger)
             if ret == 2:
                 job['status'] = 'completed'
-                self.update_job_status(job, access_token, logger)
+                self.update_job_status(job, logger)
 
                 logger.log('Running post jobs', job)
-                ret = self.execute_pre_post_jobs(job, False, access_token, logger)
+                ret = self.execute_pre_post_jobs(job, False, logger)
                 
                 if ret != False:
                     logger.log('Completed post jobs', job)
@@ -260,9 +265,9 @@ class Job:
                     logger.log('Completed finally', job)
             if ret == 3:
                 job['status'] = 'hpc_failed'
-                self.update_job_status(job, access_token, logger)
+                self.update_job_status(job, logger)
             if ret == 4:
                 job['status'] = 'hpc_aborted'
-                self.update_job_status(job, access_token, logger)
+                self.update_job_status(job, logger)
 
         return completed
