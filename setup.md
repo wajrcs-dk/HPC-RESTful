@@ -34,6 +34,19 @@ pip3 install mysql-connector
 
 -----------------------------------------------------
 
+Setup Repository
+
+cd ~
+mkdir repo
+cd repo/
+git init
+git pull origin master
+
+
+
+
+-----------------------------------------------------
+
 Install Mysql Docker
 
 sudo docker run -d -e MYSQL_ROOT_PASSWORD=pass -p 3325:3306 --name mysql_restapi mysql:5.7
