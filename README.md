@@ -10,6 +10,9 @@ https://stackoverflow.com/questions/50116182/slurm-how-can-i-prevent-jobs-inform
 
 ////////////////////////////////////////
 
+nginx:
+docker run --name nginx_restapi -d -p 8081:80 nginx
+
 mysql:
 docker run --rm -d -e MYSQL_ROOT_PASSWORD=pass -p 3325:3306 --name mysql_test mysql:5.7
 mysql -uroot -ppass -h127.0.0.1 -P3325
@@ -349,6 +352,18 @@ Bash Job
 
 https://www.gwdg.de/server-services/gwdg-cloud-server 
 
+https://info.gwdg.de/docs/doku.php?id=en:services:application_services:high_performance_computing:connect_with_ssh 
+
+ssh cloud@141.5.101.84
+
+######################################
+#                                    #
+#  The password for the user: cloud  #
+#  has been set to: ItKEI2Ac         #
+#                                    #
+######################################
+
+
 Archive Job
 
 {
@@ -375,3 +390,14 @@ Archive Job
 Server created
 The password is shown in the VNC shell until you logged in for the first time. Please keep the password and store it in a safe place.
 User: cloudPassword: (VNC)
+
+
+https://www.linode.com/docs/development/python/flask-and-gunicorn-on-ubuntu/
+
+https://stackoverflow.com/questions/60253813/gunicorn-flask-connexion-swagger-server-time-out-not-responding-to-api-reque
+
+https://stackoverflow.com/questions/60253813/gunicorn-flask-connexion-swagger-server-time-out-not-responding-to-api-reque
+
+pip3 install mysql-connector
+sudo apt-get install gunicorn3
+gunicorn -w 3 "swagger_server.__main__:main"
