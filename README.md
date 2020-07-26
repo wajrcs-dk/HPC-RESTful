@@ -354,16 +354,6 @@ https://www.gwdg.de/server-services/gwdg-cloud-server
 
 https://info.gwdg.de/docs/doku.php?id=en:services:application_services:high_performance_computing:connect_with_ssh 
 
-ssh cloud@141.5.101.84
-
-######################################
-#                                    #
-#  The password for the user: cloud  #
-#  has been set to: ItKEI2Ac         #
-#                                    #
-######################################
-
-
 Archive Job
 
 {
