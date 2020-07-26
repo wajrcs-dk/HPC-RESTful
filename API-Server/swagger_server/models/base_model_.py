@@ -7,8 +7,11 @@ from swagger_server import util
 
 import mysql.connector
 
+# 172.17.0.1
+# docker host
+
 mydb = mysql.connector.connect(
-    host="localhost",
+    host="172.17.0.1",
     user="root",
     password="pass",
     database="hpc_api",

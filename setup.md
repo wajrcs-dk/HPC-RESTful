@@ -41,9 +41,8 @@ mkdir repo
 cd repo/
 git init
 git pull origin master
-
-
-
+cd API-Server
+gunicorn3 -w 3 "swagger_server.server:app"
 
 -----------------------------------------------------
 
