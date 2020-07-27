@@ -42,7 +42,26 @@ cd repo/
 git init
 git pull origin master
 cd API-Server
+-- Test
 gunicorn3 -w 3 "swagger_server.server:app"
+apt install supervisor
+touch /etc/supervisor/conf.d/flask_app.conf
+
+[program:flask_app]
+directory=/root/repo/API-Server
+command=gunicorn3 -w 3 "swagger_server.server:app"
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+stderr_logfile=/var/log/flask_app/flask_app.err.log
+stdout_logfile=/var/log/flask_app/flask_app.out.log
+
+mkdir /var/log/flask_app
+touch /var/log/flask_app/flask_app.out.log
+touch /var/log/flask_app/flask_app.err.log
+
+service supervisor start
 
 -----------------------------------------------------
 
