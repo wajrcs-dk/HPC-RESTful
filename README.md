@@ -391,3 +391,49 @@ https://stackoverflow.com/questions/60253813/gunicorn-flask-connexion-swagger-se
 pip3 install mysql-connector
 sudo apt-get install gunicorn3
 gunicorn -w 3 "swagger_server.__main__:main"
+
+
+134.76.8.101 
+134.76.8.0/24 
+10.108.96.101 
+CIDR notation 
+
+
+import mysql.connector
+from mysql.connector import Error
+from mysql.connector.connection import MySQLConnection
+from mysql.connector import pooling
+try:
+    connection_pool = mysql.connector.pooling.MySQLConnectionPool(pool_name="pynative_pool",
+                                                                  pool_size=5,
+                                                                  pool_reset_session=True,
+                                                                  host='localhost',
+                                                                  database='python_db',
+                                                                  user='pynative',
+                                                                  password='pynative@#29')
+
+    print ("Printing connection pool properties ")
+    print("Connection Pool Name - ", connection_pool.pool_name)
+    print("Connection Pool Size - ", connection_pool.pool_size)
+
+    # Get connection object from a pool
+    connection_object = connection_pool.get_connection()
+
+
+    if connection_object.is_connected():
+       db_Info = connection_object.get_server_info()
+       print("Connected to MySQL database using connection pool ... MySQL Server version on ",db_Info)
+
+       cursor = connection_object.cursor()
+       cursor.execute("select database();")
+       record = cursor.fetchone()
+       print ("Your connected to - ", record)
+
+except Error as e :
+    print ("Error while connecting to MySQL using Connection pool ", e)
+finally:
+    #closing database connection.
+    if(connection_object.is_connected()):
+        cursor.close()
+        connection_object.close()
+        print("MySQL connection is closed")

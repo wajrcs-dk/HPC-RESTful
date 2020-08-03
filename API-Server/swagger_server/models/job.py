@@ -97,7 +97,7 @@ class Job(Model):
         """
         return util.deserialize_model(dikt, cls)
 
-    def update_job_status(old_status, new_status):
+    def update_job_status(self, old_status, new_status):
         ret = False
         
         if old_status==new_status:
@@ -129,11 +129,11 @@ class Job(Model):
 
         return ret
 
-    def get_job(job_id):
+    def get_job(self, job_id):
         sql = "SELECT * FROM `job` WHERE job_id=" + str(job_id)
-        return Model.select(sql)
+        return self.select(sql)
 
-    def insert_job(body):
+    def insert_job(self, body):
         sql = "INSERT into `job`"
         sql = sql + " (`hpc_job_id`, `operation`, `user_id`, `name`, `commands`, `job_meta_data`, `created`, `updated`, `result`, `log`, `status`) VALUES"
         sql = sql + " (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
@@ -150,9 +150,9 @@ class Job(Model):
             str(body['log']),
             str(body['status'])
         )
-        return Model.insert(sql, val)
+        return self.insert(sql, val)
 
-    def update_job_operation(job_id, operation):
+    def update_job_operation(self, job_id, operation):
         sql = "UPDATE `job` SET"
         sql = sql + " operation=%s"
         sql = sql + " WHERE job_id=%s;"
@@ -160,9 +160,9 @@ class Job(Model):
             str(operation),
             str(job_id)
         )
-        return Model.update(sql, val)
+        return self.update(sql, val)
 
-    def update_job(job_id, body):
+    def update_job(self, job_id, body):
         sql = "UPDATE `job` SET"
         sql = sql + " hpc_job_id=%s, operation=%s, user_id=%s, name=%s, commands=%s, job_meta_data=%s,"
         sql = sql + " created=%s, updated=%s, result=%s, log=%s, status=%s"
@@ -181,9 +181,9 @@ class Job(Model):
             str(body['status']),
             str(job_id)
         )
-        return Model.update(sql, val)
+        return self.update(sql, val)
 
-    def get_jobs_cout(status):
+    def get_jobs_cout(self, status):
         if status != None:
             length = len(status)
             for i in range(length): 
@@ -194,9 +194,9 @@ class Job(Model):
         if status != None:
             sql = sql + " WHERE `status` in (" + status + ");"
         
-        return Model.select(sql)
+        return self.select(sql)
 
-    def get_jobs(job_status, page_number, page_length):
+    def get_jobs(self, job_status, page_number, page_length):
         '''
         if job_status != None:
             length = len(job_status)
@@ -210,9 +210,9 @@ class Job(Model):
             sql = sql + " WHERE `status` in (" + job_status + ")"
         sql = sql + " ORDER BY `created` DESC LIMIT " + str((page_number-1)*page_length) + ", " + str(page_length)
 
-        return Model.select(sql)
+        return self.select(sql)
 
-    def delete_job_status(status):
+    def delete_job_status(self, status):
         ret = False
         
         if status=='new' or status=='cronjob_in_progress' or status=='hpc_queued':
@@ -220,10 +220,10 @@ class Job(Model):
 
         return ret
 
-    def delete_job(job_id):
+    def delete_job(self, job_id):
         sql = "DELETE FROM `job` WHERE job_id=" + str(job_id) + ";"
         val = ()
-        return Model.delete(sql, val)
+        return self.delete(sql, val)
 
     @property
     def job_id(self) -> int:

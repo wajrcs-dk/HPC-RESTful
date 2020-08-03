@@ -6,20 +6,11 @@ import typing
 from swagger_server import util
 
 import mysql.connector
-
-# 172.17.0.1
-# docker host
-
-mydb = mysql.connector.connect(
-    host="172.17.0.1",
-    user="root",
-    password="pass",
-    database="hpc_api",
-    port=3325
-)
+from mysql.connector import Error
+from mysql.connector.connection import MySQLConnection
+from mysql.connector import pooling
 
 T = typing.TypeVar('T')
-
 
 class Model(object):
     # swaggerTypes: The key is attribute name and the
@@ -29,6 +20,8 @@ class Model(object):
     # attributeMap: The key is attribute name and the
     # value is json key in definition.
     attribute_map = {}
+
+    mydb = {}
 
     @classmethod
     def from_dict(cls: typing.Type[T], dikt) -> T:
@@ -62,26 +55,50 @@ class Model(object):
 
         return result
 
-    def select(sql):
-        mycursor = mydb.cursor()
+    def connect(self):
+        ret = ''
+        try:
+            connection_pool = mysql.connector.pooling.MySQLConnectionPool(
+                pool_name="pynative_pool",
+                pool_size=5,
+                pool_reset_session=True,
+                host='172.17.0.1',
+                database='hpc_api',
+                user='root',
+                password='pass',
+                port=3325
+            )
+            # Get connection object from a pool
+            self.mydb = connection_pool.get_connection()
+        except Error as e:
+            ret = "Error while connecting to MySQL using Connection pool " + str(e)
+        return ret
+
+    def close(self):
+        # closing database connection.
+        if(self.mydb.is_connected()):
+            self.mydb.close()
+
+    def select(self, sql):
+        mycursor = self.mydb.cursor()
         mycursor.execute(sql)
         return mycursor.fetchall()
 
-    def insert(sql, val):
-        mycursor = mydb.cursor()
+    def insert(self, sql, val):
+        mycursor = self.mydb.cursor()
         mycursor.execute(sql, val)
-        mydb.commit()
+        self.mydb.commit()
         return mycursor.lastrowid
 
-    def update(sql, val):
-        mycursor = mydb.cursor()
+    def update(self, sql, val):
+        mycursor = self.mydb.cursor()
         mycursor.execute(sql, val)
-        mydb.commit()
+        self.mydb.commit()
 
-    def delete(sql, val):
-        mycursor = mydb.cursor()
+    def delete(self, sql, val):
+        mycursor = self.mydb.cursor()
         mycursor.execute(sql, val)
-        mydb.commit()
+        self.mydb.commit()
 
     def to_str(self):
         """Returns the string representation of the model

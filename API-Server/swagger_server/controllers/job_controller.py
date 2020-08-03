@@ -15,7 +15,6 @@ c. Job aborted by user before its execution: new > cronjob_in_progress > hpc_que
 d. Job failed to queue in HPC: new > cronjob_in_progress > cronjob_failed.
 '''
 
-
 def add_job(body, access_token):  # noqa: E501
     """Schedules a new job to the HPC system
 
@@ -130,11 +129,23 @@ def add_job(body, access_token):  # noqa: E501
         "status": 'new'
     }
 
+    job = Job()
+    cox = job.connect()
+    if cox != '':
+        error_code = 500
+        error_message = {
+            "detail": cox,
+            "status": error_code,
+            "title": "Internal Server Error",
+            "type": "about:blank"
+        }
+        return error_message, error_code
+
     job_id = 0
     row = []
 
     try:
-        job_id = Job.insert_job(bodyPost)
+        job_id = job.insert_job(bodyPost)
     except Exception as e: # work on python 3.x
         error_code = 500
         error_message = {
@@ -146,7 +157,7 @@ def add_job(body, access_token):  # noqa: E501
         return error_message, error_code
 
     try:
-        row = Job.get_job(job_id)
+        row = job.get_job(job_id)
     except Exception as e: # work on python 3.x
         error_code = 500
         error_message = {
@@ -183,7 +194,9 @@ def add_job(body, access_token):  # noqa: E501
         "log": row[10],
         "status": row[11]
     }
-    Job.update_job(job_id, my_result)
+    job.update_job(job_id, my_result)
+
+    job.close()
     
     my_result['jobMetaData'] = jobMetaData
     my_result['commands'] = commands
@@ -199,7 +212,7 @@ def delete_job(job_id, access_token):  # noqa: E501
 
      # noqa: E501
 
-    :param job_id: Job id to delete
+    :param job_id: job id to delete
     :type job_id: int
     :param access_token: Access token
     :type access_token: str
@@ -217,10 +230,22 @@ def delete_job(job_id, access_token):  # noqa: E501
         }
         return error_message, error_code
 
+    job = Job()
+    cox = job.connect()
+    if cox != '':
+        error_code = 500
+        error_message = {
+            "detail": cox,
+            "status": error_code,
+            "title": "Internal Server Error",
+            "type": "about:blank"
+        }
+        return error_message, error_code
+
     row = []
 
     try:
-        row = Job.get_job(job_id)
+        row = job.get_job(job_id)
     except Exception as e: # work on python 3.x
         error_code = 500
         error_message = {
@@ -232,10 +257,11 @@ def delete_job(job_id, access_token):  # noqa: E501
         return error_message, error_code
 
     if len(row) == 1:
-        status = row[0][12]
-        if Job.delete_job_status(status):
+        status = row[0][11]
+        if job.delete_job_status(status):
             try:
-                Job.delete_job(job_id)
+                job.delete_job(job_id)
+                job.close()
             except Exception as e: # work on python 3.x
                 error_code = 500
                 error_message = {
@@ -248,16 +274,16 @@ def delete_job(job_id, access_token):  # noqa: E501
         else:
             error_code = 409
             error_message = {
-              "detail": "Job with jobId " + str(job_id) + " cannot be deleted with this status.",
+              "detail": "job with jobId " + str(job_id) + " cannot be deleted with this status.",
               "status": error_code,
-              "title": "Job cannot deleted",
+              "title": "job cannot deleted",
               "type": "about:blank"
             }
             return error_message, error_code
     else:
         error_code = 404
         error_message = {
-          "detail": "Job with jobId " + str(job_id) + " not found.",
+          "detail": "job with jobId " + str(job_id) + " not found.",
           "status": error_code,
           "title": "Not found",
           "type": "about:blank"
@@ -294,11 +320,24 @@ def find_jobs_by_status(page_length, page_number, access_token, status=None):  #
         }
         return error_message, error_code
 
+    job = Job()
+    cox = job.connect()
+    if cox != '':
+        error_code = 500
+        error_message = {
+            "detail": cox,
+            "status": error_code,
+            "title": "Internal Server Error",
+            "type": "about:blank"
+        }
+        return error_message, error_code
+
     my_result_total = []
     my_result = []
     try:
-        my_result_total = Job.get_jobs_cout(status)
-        my_result = Job.get_jobs(status, page_number, page_length)
+        my_result_total = job.get_jobs_cout(status)
+        my_result = job.get_jobs(status, page_number, page_length)
+        job.close()
     except Exception as e: # work on python 3.x
         error_code = 500
         error_message = {
@@ -346,7 +385,7 @@ def get_job_by_id(job_id, access_token):  # noqa: E501
     :param access_token: Access token
     :type access_token: str
 
-    :rtype: Job
+    :rtype: job
     """
 
     if access_token != 'N9TT-9G0A-B7FQ-RANC':
@@ -359,9 +398,22 @@ def get_job_by_id(job_id, access_token):  # noqa: E501
         }
         return error_message, error_code
 
+    job = Job()
+    cox = job.connect()
+    if cox != '':
+        error_code = 500
+        error_message = {
+            "detail": cox,
+            "status": error_code,
+            "title": "Internal Server Error",
+            "type": "about:blank"
+        }
+        return error_message, error_code
+
     row = []
     try:
-        row = Job.get_job(job_id)
+        row = job.get_job(job_id)
+        job.close()
     except Exception as e: # work on python 3.x
         error_code = 500
         error_message = {
@@ -396,7 +448,7 @@ def get_job_by_id(job_id, access_token):  # noqa: E501
     else:
         error_code = 404
         error_message = {
-          "detail": "Job with jobId " + str(job_id) + " not found.",
+          "detail": "job with jobId " + str(job_id) + " not found.",
           "status": error_code,
           "title": "Not found",
           "type": "about:blank"
@@ -409,14 +461,14 @@ def update_job(body, job_id, access_token):  # noqa: E501
 
      # noqa: E501
 
-    :param body: Job object that needs to be added
+    :param body: job object that needs to be added
     :type body: dict | bytes
     :param job_id: ID of job to return
     :type job_id: int
     :param access_token: Access token
     :type access_token: str
 
-    :rtype: Job
+    :rtype: job
     """
     
     if access_token != 'N9TT-9G0A-B7FQ-RANC':
@@ -431,11 +483,23 @@ def update_job(body, job_id, access_token):  # noqa: E501
 
     '''
     if connexion.request.is_json:
-        body = Job.from_dict(connexion.request.get_json())  # noqa: E501
+        body = job.from_dict(connexion.request.get_json())  # noqa: E501
     '''
 
+    job = Job()
+    cox = job.connect()
+    if cox != '':
+        error_code = 500
+        error_message = {
+            "detail": cox,
+            "status": error_code,
+            "title": "Internal Server Error",
+            "type": "about:blank"
+        }
+        return error_message, error_code
+
     try:
-        row = Job.get_job(job_id)
+        row = job.get_job(job_id)
     except Exception as e: # work on python 3.x
         error_code = 500
         error_message = {
@@ -470,21 +534,21 @@ def update_job(body, job_id, access_token):  # noqa: E501
 
         hpc_cout = 0
         for cmd in body['commands']:
-            if not('subJobType' in cmd and 'parameters' in cmd):
+            if not('subjobType' in cmd and 'parameters' in cmd):
                 error_code = 405
                 error_message = {
-                    "detail": 'Invalid input, please provide subJobType and parameters in commands',
+                    "detail": 'Invalid input, please provide subjobType and parameters in commands',
                     "status": error_code,
                     "title": "Invalid input",
                     "type": "about:blank"
                 }
                 return error_message, error_code
-            if cmd['subJobType'] == 'hpc':
+            if cmd['subjobType'] == 'hpc':
                     hpc_cout = hpc_cout + 1
             if hpc_cout > 1:
                 error_code = 405
                 error_message = {
-                    "detail": 'Invalid input, please provide only one subJobType=hpc in commands',
+                    "detail": 'Invalid input, please provide only one subjobType=hpc in commands',
                     "status": error_code,
                     "title": "Invalid input",
                     "type": "about:blank"
@@ -495,9 +559,10 @@ def update_job(body, job_id, access_token):  # noqa: E501
         body['jobMetaData'] = json.dumps(body['jobMetaData'])
         body['commands'] = json.dumps(body['commands'])
 
-        if Job.update_job_status(row[0][11], body['status']):
+        if job.update_job_status(row[0][11], body['status']):
             try:
-                Job.update_job(job_id, body)
+                job.update_job(job_id, body)
+                job.close()
             except Exception as e: # work on python 3.x
                 error_code = 500
                 error_message = {
@@ -515,16 +580,16 @@ def update_job(body, job_id, access_token):  # noqa: E501
         else:
             error_code = 409
             error_message = {
-              "detail": "Job with jobId " + str(job_id) + " cannot be updated with this status.",
+              "detail": "job with jobId " + str(job_id) + " cannot be updated with this status.",
               "status": error_code,
-              "title": "Job cannot updated",
+              "title": "job cannot updated",
               "type": "about:blank"
             }
             return error_message, error_code
     else:
         error_code = 404
         error_message = {
-          "detail": "Job with jobId " + str(job_id) + " not found.",
+          "detail": "job with jobId " + str(job_id) + " not found.",
           "status": error_code,
           "title": "Not found",
           "type": "about:blank"
@@ -539,12 +604,12 @@ def update_job_by_operation(job_id, operation, access_token):  # noqa: E501
 
     :param job_id: name that need to be updated
     :type job_id: int
-    :param operation: Job Operation
+    :param operation: job Operation
     :type operation: str
     :param access_token: Access token
     :type access_token: str
 
-    :rtype: Job
+    :rtype: job
     """
 
     if access_token != 'N9TT-9G0A-B7FQ-RANC':
@@ -557,8 +622,20 @@ def update_job_by_operation(job_id, operation, access_token):  # noqa: E501
         }
         return error_message, error_code
 
+    job = Job()
+    cox = job.connect()
+    if cox != '':
+        error_code = 500
+        error_message = {
+            "detail": cox,
+            "status": error_code,
+            "title": "Internal Server Error",
+            "type": "about:blank"
+        }
+        return error_message, error_code
+
     try:
-        row = Job.get_job(job_id)
+        row = job.get_job(job_id)
     except Exception as e: # work on python 3.x
         error_code = 500
         error_message = {
@@ -572,7 +649,8 @@ def update_job_by_operation(job_id, operation, access_token):  # noqa: E501
     if len(row) == 1:
 
         try:
-            Job.update_job_operation(job_id, operation)
+            job.update_job_operation(job_id, operation)
+            job.close()
         except Exception as e: # work on python 3.x
             error_code = 500
             error_message = {
@@ -606,7 +684,7 @@ def update_job_by_operation(job_id, operation, access_token):  # noqa: E501
     else:
         error_code = 404
         error_message = {
-          "detail": "Job with jobId " + str(job_id) + " not found.",
+          "detail": "job with jobId " + str(job_id) + " not found.",
           "status": error_code,
           "title": "Not found",
           "type": "about:blank"

@@ -26,13 +26,15 @@ class Job:
     def update_job_status(self, job, logger):
         logger.log('Updating status', job)
         now = time.strftime('%Y-%m-%d %H:%M:%S')
-        job['created'] = now
+        job['created'] = job['created'].replace('T', ' ').replace('Z', '')
         job['updated'] = now
         r = self.update_job(job['jobId'], job)
         logger.log('Updated status', job)
 
     def mark_job_error(self, job, subJobType, logger):
         if subJobType == 'hpc_status':
+            job['status'] = 'hpc_failed'
+        elif subJobType == 'hpc_abort':
             job['status'] = 'hpc_failed'
         else:
             job['status'] = 'cronjob_failed'
@@ -51,6 +53,10 @@ class Job:
         cmd_str = ''
         valid = False
         valid_reason = ''
+
+        if cmd['subJobType'] == 'hpc_abort':
+            cmd_str = 'scancel ' + cmd['parameters']
+            valid = True
 
         if cmd['subJobType'] == 'hpc_status':
             cmd_str = 'scontrol show jobid ' + cmd['parameters']
@@ -117,7 +123,7 @@ class Job:
                     logger.log('Updating hpc jobId', job)
                     job['hpcJobId'] = int(cmd_output.replace("Submitted batch job", "").strip())
                     now = time.strftime('%Y-%m-%d %H:%M:%S')
-                    job['created'] = now
+                    job['created'] = job['created'].replace('T', ' ').replace('Z', '')
                     job['updated'] = now
                     self.update_job(job['jobId'], job)
                     logger.log('Updated hpcJobId to '+str(job['hpcJobId']), job)
@@ -175,6 +181,18 @@ class Job:
             return cmd_output
         else:
             return True
+
+    def hpc_abort_job(self, job, logger):
+        ret = 0
+        cmd_obj = {}
+        cmd_obj['subJobType'] = 'hpc_abort'
+        cmd_obj['parameters'] = str(job['hpcJobId'])
+        result = self.execute_cmd(job, cmd_obj, logger)
+
+        if result != False:
+            ret = 1
+            logger.log('Returning job cancle: ' + str(result), job)
+        return ret
 
     def check_hpc_job_status(self, job, logger):
         ret = 0
@@ -236,38 +254,46 @@ class Job:
                     self.update_job_status(job, logger)
         
         if (job['status'] == 'hpc_queued'):
-            ret = self.check_hpc_job_status(job, logger)
-            if ret == 1:
-                job['status'] = 'hpc_in_progress'
-                self.update_job_status(job, logger)
-            if ret == 2:
-                job['status'] = 'hpc_in_progress'
-                self.update_job_status(job, logger)
-            if ret == 3:
-                job['status'] = 'hpc_failed'
-                self.update_job_status(job, logger)
-            if ret == 4:
-                job['status'] = 'hpc_aborted'
-                self.update_job_status(job, logger)
+            if job['operation'] == 'queue':
+                ret = self.check_hpc_job_status(job, logger)
+                if ret == 1:
+                    job['status'] = 'hpc_in_progress'
+                    self.update_job_status(job, logger)
+                if ret == 2:
+                    job['status'] = 'hpc_in_progress'
+                    self.update_job_status(job, logger)
+                if ret == 3:
+                    job['status'] = 'hpc_failed'
+                    self.update_job_status(job, logger)
+                if ret == 4:
+                    job['status'] = 'hpc_aborted'
+                    self.update_job_status(job, logger)
+            
+            if job['operation'] == 'abort':
+                hpc_abort_job(job, logger)
         
         if (job['status'] == 'hpc_in_progress'):
-            ret = self.check_hpc_job_status(job, logger)
-            if ret == 2:
-                job['status'] = 'completed'
-                self.update_job_status(job, logger)
+            if job['operation'] == 'queue':
+                ret = self.check_hpc_job_status(job, logger)
+                if ret == 2:
+                    job['status'] = 'completed'
+                    self.update_job_status(job, logger)
 
-                logger.log('Running post jobs', job)
-                ret = self.execute_pre_post_jobs(job, False, logger)
-                
-                if ret != False:
-                    logger.log('Completed post jobs', job)
-                    completed = True
-                    logger.log('Completed finally', job)
-            if ret == 3:
-                job['status'] = 'hpc_failed'
-                self.update_job_status(job, logger)
-            if ret == 4:
-                job['status'] = 'hpc_aborted'
-                self.update_job_status(job, logger)
+                    logger.log('Running post jobs', job)
+                    ret = self.execute_pre_post_jobs(job, False, logger)
+                    
+                    if ret != False:
+                        logger.log('Completed post jobs', job)
+                        completed = True
+                        logger.log('Completed finally', job)
+                if ret == 3:
+                    job['status'] = 'hpc_failed'
+                    self.update_job_status(job, logger)
+                if ret == 4:
+                    job['status'] = 'hpc_aborted'
+                    self.update_job_status(job, logger)
+            
+            if job['operation'] == 'abort':
+                hpc_abort_job(job, logger)
 
         return completed
