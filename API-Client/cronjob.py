@@ -16,7 +16,7 @@ if len(sys.argv) != 6:
     print ('Program requires these cli parameters: <progran> <host> <port> <endpoint> <temp_path> <time_to_sleep>')
 else:
     runner = True
-    time_to_sleep = sys.argv[5]
+    time_to_sleep = int(sys.argv[5])
     access_token = 'N9TT-9G0A-B7FQ-RANC'
     # docker host
     # 172.17.0.1
