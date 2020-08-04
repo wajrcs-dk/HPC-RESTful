@@ -231,6 +231,12 @@ gcc -o Bin/HelloWorld Source/HelloWorld.c
 
 Compile Job
 
+http://172.17.0.4/Master-Thesis/HPC-RESTful/1.0.0/job?accessToken=N9TT-9G0A-B7FQ-RANC
+
+
+curl -X POST -i 'http://172.17.0.4/Master-Thesis/HPC-RESTful/1.0.0/job?accessToken=N9TT-9G0A-B7FQ-RANC' --data '{"name":"Compile Hello World","commands":[{"subJobType":"unarchive","parameters":"/data/input/HelloWorld.zip|/data/jobs/{jobId}/"},{"subJobType":"compile","parameters":"/data/jobs/{jobId}/Makefile"},{"subJobType":"archive","parameters":"/data/output/HelloWorld-Compiled-{jobId}.zip|/data/jobs/{jobId}/"}],"jobMetaData":{"error":"","output":"/data/output/HelloWorld-Compiled-{jobId}.zip"}}'
+
+
 {
   "name": "Compile v1",
   "commands": [
@@ -399,6 +405,39 @@ gunicorn -w 3 "swagger_server.__main__:main"
 CIDR notation 
 
 
+sudo docker run --detach \
+  --hostname gitlab \
+  --publish 443:443 --publish 80:80 --publish 22:22 \
+  --name gitlab \
+  --restart always \
+  --volume /srv/gitlab/config:/etc/gitlab \
+  --volume /srv/gitlab/logs:/var/log/gitlab \
+  --volume /srv/gitlab/data:/var/opt/gitlab \
+  --volume slurm-docker_slurm_jobdir:/data \
+  gitlab/gitlab-ce:latest
+
+
+put host name:
+172.17.0.2 gitlab
+
+
+ docker run -d --name gitlab-runner --restart always \
+    --hostname gitlab-runner \
+     -v /srv/gitlab-runner/config:/etc/gitlab-runner \
+     -v /var/run/docker.sock:/var/run/docker.sock \
+     -v slurm-docker_slurm_jobdir:/data \
+     gitlab/gitlab-runner:latest
+
+put host name:
+172.17.0.3 gitlab-runner
+
+This command registers
+
+docker run --rm -it -v /srv/gitlab-runner/config:/etc/gitlab-runner gitlab/gitlab-runner register
+
+Nginx:
+172.17.0.4
+
 import mysql.connector
 from mysql.connector import Error
 from mysql.connector.connection import MySQLConnection
@@ -437,3 +476,34 @@ finally:
         cursor.close()
         connection_object.close()
         print("MySQL connection is closed")
+
+
+
+gitlab:
+    container_name: gitlab_hpc
+    image: gitlab/gitlab-ce:latest
+    restart: always
+    hostname: 'localhost'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://localhost:8929'
+        # Add any other gitlab.rb configuration here, each on its own line
+    ports:
+      - '8929:8929'
+      - '2224:22'
+    volumes:
+      - '/srv/gitlab/config:/etc/gitlab'
+      - '/srv/gitlab/logs:/var/log/gitlab'
+      - '/srv/gitlab/data:/var/opt/gitlab'
+      - slurm_jobdir:/data
+
+  gitlab-runner:
+    image: gitlab/gitlab-runner:alpine
+    restart: unless-stopped
+    container_name: gitlab_runner_hpc
+    depends_on:
+      - gitlab
+    volumes:
+      - '/srv/gitlab-runner/config:/etc/gitlab-runner'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - slurm_jobdir:/data

@@ -12,18 +12,18 @@ from swagger_client import logger
 # 8080
 # Master-Thesis/HPC-RESTful/1.0.0/
 
-if len(sys.argv) != 4:
-    print ('Program requires these cli parameters: <progran> <host> <port> <endpoint>')
+if len(sys.argv) != 6:
+    print ('Program requires these cli parameters: <progran> <host> <port> <endpoint> <temp_path> <time_to_sleep>')
 else:
     runner = True
-    time_to_sleep = 5
+    time_to_sleep = sys.argv[5]
     access_token = 'N9TT-9G0A-B7FQ-RANC'
     # docker host
     # 172.17.0.1
     URL = 'http://' + sys.argv[1] + ':' + sys.argv[2] + '/' + sys.argv[3];
-    BASE_PATH = '/data/jobs/'
+    BASE_PATH = sys.argv[4]
     pageLength = 1
-    logger = logger.Logger()
+    logger = logger.Logger(URL, access_token)
 
     while runner:
         pageNumber = 1

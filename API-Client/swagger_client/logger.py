@@ -4,6 +4,12 @@ from swagger_client import job
 class Logger:
 
     f = None
+    URL = ''
+    access_token = ''
+
+    def __init__(self, URL, access_token):
+        self.URL = URL
+        self.access_token = access_token
 
     def log_open(self):
         self.f = open("swagger_logs/cronjob.log","a+")
@@ -14,10 +20,7 @@ class Logger:
             msg = time.strftime('%Y-%m-%d %H:%M:%S') + ": "+ str_msg
         else:
             msg = time.strftime('%Y-%m-%d %H:%M:%S') + ": Job [" + str(job_db['jobId']) + "]["+ job_db['status'] +"] "+ str_msg
-
-            URL = 'http://restapi:8080/Master-Thesis/HPC-RESTful/1.0.0/';
-            access_token = 'N9TT-9G0A-B7FQ-RANC'
-            jobObj = job.Job(URL, access_token)
+            jobObj = job.Job(self.URL, self.access_token)
             jobObj.update_job_logs(job_db, msg)
         
         print (msg)
