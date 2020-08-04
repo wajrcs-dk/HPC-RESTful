@@ -17,7 +17,9 @@ class Job:
         return Api.get(self.URL + 'job/findJobsByStatus', params)
 
     def update_job(self, job_id, data):
-        return Api.put(self.URL + 'job/' + str(job_id) + '?accessToken='+ self.access_token, data)
+        res = Api.put(self.URL + 'job/' + str(job_id) + '?accessToken='+ self.access_token, data)
+        print res
+        return res
 
     def update_job_logs(self, job, log):
         job['log'] = job['log'] + log + "\n"
@@ -129,7 +131,6 @@ class Job:
                     logger.log('Updated hpcJobId to '+str(job['hpcJobId']), job)
                 
                 cmd_output = cmd_output.replace("\n", '|')
-                logger.log('Output cmd "' + cmd_output + '"', job)
                 logger.log('Completed cmd "' + cmd_str + '"', job)
 
                 return cmd_output
