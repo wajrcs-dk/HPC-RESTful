@@ -18,7 +18,7 @@ class Job:
 
     def update_job(self, job_id, data):
         res = Api.put(self.URL + 'job/' + str(job_id) + '?accessToken='+ self.access_token, data)
-        print res
+        print (res)
         return res
 
     def update_job_logs(self, job, log):
