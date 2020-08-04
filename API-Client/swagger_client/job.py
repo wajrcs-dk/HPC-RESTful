@@ -30,6 +30,8 @@ class Job:
         now = time.strftime('%Y-%m-%d %H:%M:%S')
         job['created'] = job['created'].replace('T', ' ').replace('Z', '')
         job['updated'] = now
+        print ('Updating JOB:')
+        print (job)
         r = self.update_job(job['jobId'], job)
         logger.log('Updated status', job)
 
