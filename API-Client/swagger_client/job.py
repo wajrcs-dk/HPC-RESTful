@@ -23,6 +23,8 @@ class Job:
 
     def update_job_logs(self, job, log):
         job['log'] = job['log'] + log + "\n"
+        print ('Updating JOB 2:')
+        print (job)
         r = self.update_job(job['jobId'], job)
 
     def update_job_status(self, job, logger):
