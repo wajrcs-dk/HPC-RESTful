@@ -25,7 +25,6 @@ class Job:
         job['created'] = job['created'].replace('T', ' ').replace('Z', '')
         job['updated'] = now
         r = self.update_job(job['jobId'], job)
-        print (r)
 
     def update_job_status(self, job, logger):
         logger.log('Updating status', job)
@@ -123,7 +122,7 @@ class Job:
                 self.mark_job_error(job, cmd['subJobType'], logger)
                 return False
             else:
-                if cmd['subJobType'] == 'hpc':
+                if cmd['subJobType'] == 'hpc' or cmd['subJobType'] == 'compile':
                     logger.log('Updating hpc jobId', job)
                     job['hpcJobId'] = int(cmd_output.replace("Submitted batch job", "").strip())
                     now = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -148,7 +147,7 @@ class Job:
         
         if pre == True:
             for cmd in job['commands']:
-                if cmd['subJobType'] != 'hpc':
+                if cmd['subJobType'] != 'hpc' and cmd['subJobType'] != 'compile':
                     commands.append(cmd)
                 else:
                     break
@@ -157,7 +156,7 @@ class Job:
             for cmd in job['commands']:
                 if after == True:
                     commands.append(cmd)
-                if cmd['subJobType'] == 'hpc':
+                if cmd['subJobType'] == 'hpc' or cmd['subJobType'] == 'compile':
                     after = True
 
         for cmd in commands:
@@ -170,7 +169,7 @@ class Job:
         cmd_obj = {}
         
         for cmd in job['commands']:
-            if cmd['subJobType'] == 'hpc':
+            if cmd['subJobType'] == 'hpc' or cmd['subJobType'] == 'compile':
                 cmd_obj = cmd
                 break
 
