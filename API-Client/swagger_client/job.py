@@ -17,25 +17,22 @@ class Job:
         return Api.get(self.URL + 'job/findJobsByStatus', params)
 
     def update_job(self, job_id, data):
-        res = Api.put(self.URL + 'job/' + str(job_id) + '?accessToken='+ self.access_token, data)
-        print (res)
-        return res
+        return Api.put(self.URL + 'job/' + str(job_id) + '?accessToken='+ self.access_token, data)
 
     def update_job_logs(self, job, log):
         job['log'] = job['log'] + log + "\n"
-        print ('Updating JOB 2:')
-        print (job)
-
+        now = time.strftime('%Y-%m-%d %H:%M:%S')
+        job['created'] = job['created'].replace('T', ' ').replace('Z', '')
+        job['updated'] = now
         r = self.update_job(job['jobId'], job)
-        exit()
+        print (r)
+        logger.log('Updated logs', job)
 
     def update_job_status(self, job, logger):
         logger.log('Updating status', job)
         now = time.strftime('%Y-%m-%d %H:%M:%S')
         job['created'] = job['created'].replace('T', ' ').replace('Z', '')
         job['updated'] = now
-        print ('Updating JOB:')
-        print (job)
         r = self.update_job(job['jobId'], job)
         logger.log('Updated status', job)
 
