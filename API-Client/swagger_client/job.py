@@ -26,7 +26,6 @@ class Job:
         job['updated'] = now
         r = self.update_job(job['jobId'], job)
         print (r)
-        logger.log('Updated logs', job)
 
     def update_job_status(self, job, logger):
         logger.log('Updating status', job)
