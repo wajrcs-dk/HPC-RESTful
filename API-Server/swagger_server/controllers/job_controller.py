@@ -534,21 +534,21 @@ def update_job(body, job_id, access_token):  # noqa: E501
 
         hpc_cout = 0
         for cmd in body['commands']:
-            if not('subjobType' in cmd and 'parameters' in cmd):
+            if not('subJobType' in cmd and 'parameters' in cmd):
                 error_code = 405
                 error_message = {
-                    "detail": 'Invalid input, please provide subjobType and parameters in commands',
+                    "detail": 'Invalid input, please provide subJobType and parameters in commands',
                     "status": error_code,
                     "title": "Invalid input",
                     "type": "about:blank"
                 }
                 return error_message, error_code
-            if cmd['subjobType'] == 'hpc':
+            if cmd['subJobType'] == 'hpc':
                     hpc_cout = hpc_cout + 1
             if hpc_cout > 1:
                 error_code = 405
                 error_message = {
-                    "detail": 'Invalid input, please provide only one subjobType=hpc in commands',
+                    "detail": 'Invalid input, please provide only one subJobType=hpc in commands',
                     "status": error_code,
                     "title": "Invalid input",
                     "type": "about:blank"
