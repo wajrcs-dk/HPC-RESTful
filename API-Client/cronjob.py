@@ -53,7 +53,7 @@ else:
 
                         completed = jobObj.execute_job(job_db, logger)
 
-                        if job_db['status'] = 'hpc_aborted' or job_db['status'] = 'cronjob_failed' or job_db['status'] = 'hpc_failed' or job_db['status'] = 'completed':
+                        if job_db['status'] == 'hpc_aborted' or job_db['status'] == 'cronjob_failed' or job_db['status'] == 'hpc_failed' or job_db['status'] == 'completed':
                             if os.path.exists(BASE_PATH + str(job_db['jobId']) + '/'):
                                 shutil.rmtree(BASE_PATH + str(job_db['jobId']) + '/')
                 else:
