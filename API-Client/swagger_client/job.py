@@ -86,7 +86,7 @@ class Job:
                     cmd_str = 'zip -r ' + parameters[0] + ' ' + parameters[1]
                     valid = True
                 if os.path.isdir(os.path.dirname(parameters[0])) and os.path.isfile(parameters[1]):
-                    cmd_str = 'zip -r ' + parameters[0] + ' ' + parameters[1]
+                    cmd_str = 'zip -FSr ' + parameters[0] + ' ' + parameters[1]
                     valid = True
 
         elif cmd['subJobType'] == 'unarchive':

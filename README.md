@@ -237,6 +237,40 @@ http://172.17.0.4/Master-Thesis/HPC-RESTful/1.0.0/job?accessToken=N9TT-9G0A-B7FQ
 curl -X POST -i 'http://172.17.0.4/Master-Thesis/HPC-RESTful/1.0.0/job?accessToken=N9TT-9G0A-B7FQ-RANC' --data '{"name":"Compile Hello World","commands":[{"subJobType":"unarchive","parameters":"/data/input/HelloWorld.zip|/data/jobs/{jobId}/"},{"subJobType":"compile","parameters":"/data/jobs/{jobId}/Makefile"},{"subJobType":"archive","parameters":"/data/output/HelloWorld-Compiled-{jobId}.zip|/data/jobs/{jobId}/"}],"jobMetaData":{"error":"","output":"/data/output/HelloWorld-Compiled-{jobId}.zip"}}'
 
 
+/usr/users/walamgi/
+
+{
+  "name": "Compile v1",
+  "commands": [
+    {
+      "subJobType": "compile",
+      "parameters": "/usr/users/walamgi/data/input/HelloWorld/Makefile"
+    }
+  ],
+  "jobMetaData": {
+    "error": "",
+    "output": ""
+  }
+}
+
+{
+  "name": "Archive v1",
+  "commands": [
+    {
+      "subJobType": "unarchive",
+      "parameters": "/usr/users/walamgi/data/input/HelloWorld.zip|/usr/users/walamgi/data/jobs/{jobId}/"
+    }, {
+      "subJobType": "archive",
+      "parameters": "/usr/users/walamgi/data/output/HelloWorld-{jobId}.zip|/usr/users/walamgi/data/jobs/{jobId}/"
+    }
+  ],
+  "jobMetaData": {
+    "error": "",
+    "output": "/usr/users/walamgi/data/output/HelloWorld-{jobId}.zip"
+  }
+}
+
+
 {
   "name": "Compile v1",
   "commands": [
@@ -507,3 +541,21 @@ gitlab:
       - '/srv/gitlab-runner/config:/etc/gitlab-runner'
       - '/var/run/docker.sock:/var/run/docker.sock'
       - slurm_jobdir:/data
+
+
+
+##################333333
+
+sudo su
+docker stop ebaf78f0c985
+service apache2 stop
+service sshd stop
+docker start caadf82c5fe8
+docker start ebaf78f0c985
+docker start 767cc028db4c
+docker start e01dafdb6e06
+docker exec -it 767cc028db4c bash
+service supervisor start
+docker exec -it ebaf78f0c985 bash
+vi /etc/hosts
+docker-compose start

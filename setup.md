@@ -17,7 +17,7 @@ python3 cronjob.py 172.17.0.1 8081 Master-Thesis/HPC-RESTful/1.0.0/ /data/jobs/ 
 or
 python3 cronjob.py localhost 8081 Master-Thesis/HPC-RESTful/1.0.0/ /data/jobs/ 5
 or
-python3 cronjob.py 141.5.101.84 8081 Master-Thesis/HPC-RESTful/1.0.0/ /data/jobs/ 5
+python3 cronjob.py 141.5.101.84 8081 Master-Thesis/HPC-RESTful/1.0.0/ /usr/users/walamgi/data/jobs/ 5
 
 -----------------------------------------------------
 
