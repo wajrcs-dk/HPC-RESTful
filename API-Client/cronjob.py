@@ -53,8 +53,9 @@ else:
 
                         completed = jobObj.execute_job(job_db, logger)
 
-                        if os.path.exists(BASE_PATH + str(job_db['jobId']) + '/'):
-                            shutil.rmtree(BASE_PATH + str(job_db['jobId']) + '/')
+                        if job_db['status'] = 'hpc_aborted' or job_db['status'] = 'cronjob_failed' or job_db['status'] = 'hpc_failed' or job_db['status'] = 'completed':
+                            if os.path.exists(BASE_PATH + str(job_db['jobId']) + '/'):
+                                shutil.rmtree(BASE_PATH + str(job_db['jobId']) + '/')
                 else:
                     logger.log('No job found')
                 logger.log('Processed jobs with page ' + str(pageNumber))
