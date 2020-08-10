@@ -6,7 +6,7 @@ import time
 BASE_URL = 'http://172.17.0.4/Master-Thesis/HPC-RESTful/1.0.0'
 get_url = BASE_URL + '/job/{jobId}?accessToken=N9TT-9G0A-B7FQ-RANC'
 post_url = BASE_URL + '/job?accessToken=N9TT-9G0A-B7FQ-RANC'
-yaml_file = 'hpc.yaml'
+yaml_file = 'hpc.yml'
 attempt = 0
 time_to_sleep = 5
 
