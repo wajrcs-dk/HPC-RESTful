@@ -83,7 +83,7 @@ class Job:
             parameters = cmd['parameters'].split('|')
             if len(parameters) == 2:
                 if os.path.isdir(os.path.dirname(parameters[0])) and os.path.isdir(parameters[1]):
-                    cmd_str = 'zip -FSr ' + parameters[0] + ' ' + parameters[1]
+                    cmd_str = 'cd ' + parameters[1] + ' && zip -FSr ' + parameters[0] + ' ./'
                     valid = True
                 if os.path.isdir(os.path.dirname(parameters[0])) and os.path.isfile(parameters[1]):
                     cmd_str = 'zip -FSr ' + parameters[0] + ' ' + parameters[1]
