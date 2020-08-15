@@ -1,3 +1,12 @@
+1. Issue
+2. API
+3. GitLab & GitLab Runner
+4. Overall Architecture with Docker
+5. Demonstration of Hello World Program
+
+---------------------------------------
+
+
 Install Docker on Ubuntu
 
 $ curl -fsSL https://get.docker.com -o get-docker.sh

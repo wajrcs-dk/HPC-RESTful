@@ -8,6 +8,12 @@ https://phoenixnap.com/kb/how-to-share-data-between-docker-containers
 
 https://stackoverflow.com/questions/50116182/slurm-how-can-i-prevent-jobs-information-to-be-removed
 
+https://medium.com/@darutk/diagrams-of-all-the-openid-connect-flows-6968e3990660
+https://medium.com/@darutk/diagrams-and-movies-of-all-the-oauth-2-0-flows-194f3c3ade85
+https://openid.net/developers/certified/
+https://github.com/OpenIDC/pyoidc
+https://realpython.com/token-based-authentication-with-flask/#register-route
+
 ////////////////////////////////////////
 
 nginx:
@@ -559,3 +565,12 @@ service supervisor start
 docker exec -it ebaf78f0c985 bash
 vi /etc/hosts
 docker-compose start
+
+
+------------------
+
+docker-compose start
+docker stop ebaf78f0c985
+docker stop caadf82c5fe8
+docker stop e01dafdb6e06
+docker stop 767cc028db4c
