@@ -14,6 +14,26 @@ https://openid.net/developers/certified/
 https://github.com/OpenIDC/pyoidc
 https://realpython.com/token-based-authentication-with-flask/#register-route
 
+https://www.pramp.com
+
+
+https://searchapparchitecture.techtarget.com/definition/RESTful-API
+https://restfulapi.net/
+https://swagger.io/resources/articles/documenting-apis-with-swagger/
+https://medium.com/swlh/restful-api-documentation-made-easy-with-swagger-and-openapi-6df7f26dcad
+https://www.smashingmagazine.com/2018/01/understanding-using-rest-api/
+https://www.baeldung.com/swagger-2-documentation-for-spring-rest-api
+
+https://medium.com/wolox/documenting-a-nodejs-rest-api-with-openapi-3-swagger-5deee9f50420
+https://scotch.io/tutorials/speed-up-your-restful-api-development-in-node-js-with-swagger
+
+https://auth0.com/blog/kubernetes-tutorial-step-by-step-introduction-to-basic-concepts/
+
+//////////////////////////////////////
+
+https://flowable.com/open-source/docs/bpmn/ch02-GettingStarted/
+https://paulhh.wordpress.com/2017/01/31/flowable-6-instant-gratification/
+
 ////////////////////////////////////////
 
 nginx:

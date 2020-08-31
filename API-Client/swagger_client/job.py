@@ -13,12 +13,15 @@ class Job:
         self.URL = URL
         self.access_token = access_token
 
+    # This function fetches incomplete jobs from RESTful API server.
     def find_jobs_by_status(self, params):
         return Api.get(self.URL + 'job/findJobsByStatus', params)
 
+    # This function updates a job via RESTful API server.
     def update_job(self, job_id, data):
         return Api.put(self.URL + 'job/' + str(job_id) + '?accessToken='+ self.access_token, data)
 
+    # This function updates job log via RESTful API server.
     def update_job_logs(self, job, log):
         job['log'] = job['log'] + log + "\n"
         now = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -26,6 +29,7 @@ class Job:
         job['updated'] = now
         r = self.update_job(job['jobId'], job)
 
+    # This function updates job status via RESTful API server.
     def update_job_status(self, job, logger):
         logger.log('Updating status', job)
         now = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -34,6 +38,7 @@ class Job:
         r = self.update_job(job['jobId'], job)
         logger.log('Updated status', job)
 
+    # This function marks job status as failed via RESTful API server.
     def mark_job_error(self, job, subJobType, logger):
         if subJobType == 'hpc_status':
             job['status'] = 'hpc_failed'
@@ -43,28 +48,29 @@ class Job:
             job['status'] = 'cronjob_failed'
         self.update_job_status(job, logger)
 
+    # This function runs a bash command and return results.
     def run(self, cmd, print_result):
-        '''stream = os.popen(cmd)
-        cmd_output = stream.read()
-        exit_code = 0
-        '''
         process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = process.communicate()
         return [out.decode("utf-8"), err.decode("utf-8"), process.returncode]
 
+    # This function generates and then runs a command from the API data and return results.
     def execute_cmd(self, job, cmd, logger):
         cmd_str = ''
         valid = False
         valid_reason = ''
 
+        # HPC scancel command.
         if cmd['subJobType'] == 'hpc_abort':
             cmd_str = 'scancel ' + cmd['parameters']
             valid = True
 
+        # HPC scontrol command.
         if cmd['subJobType'] == 'hpc_status':
             cmd_str = 'scontrol show jobid ' + cmd['parameters']
             valid = True
 
+        # HPC sbatch command.
         if cmd['subJobType'] == 'hpc':
             valid_reason = 'Hpc job: Invalid script'
             filename, file_extension = os.path.splitext(cmd['parameters'])
@@ -72,12 +78,14 @@ class Job:
                 cmd_str = 'sbatch ' + cmd['parameters']
                 valid = True
 
+        # Compile command using sbatch.
         if cmd['subJobType'] == 'compile':
             valid_reason = 'Compile job: Invalid file'
             if os.path.isfile(cmd['parameters']):
                 cmd_str = 'sbatch --wrap="make -C ' + os.path.dirname(cmd['parameters']) + '"'
                 valid = True
 
+        # Archive command using zip.
         elif cmd['subJobType'] == 'archive':
             valid_reason = 'Archive job: Invalid path'
             parameters = cmd['parameters'].split('|')
@@ -89,6 +97,7 @@ class Job:
                     cmd_str = 'zip -FSr ' + parameters[0] + ' ' + parameters[1]
                     valid = True
 
+        # Unarchive command using unzip.
         elif cmd['subJobType'] == 'unarchive':
             valid_reason = 'Unarchive job: Invalid path'
             parameters = cmd['parameters'].split('|')
@@ -97,6 +106,7 @@ class Job:
                     cmd_str = 'unzip ' + parameters[0] + ' -d ' + parameters[1]
                     valid = True
         
+        # Copy command using cp.
         elif cmd['subJobType'] == 'copy':
             valid_reason = 'Copy job: Invalid path'
             parameters = cmd['parameters'].split('|')
@@ -106,8 +116,11 @@ class Job:
                         cmd_str = 'cp ' + parameters[0] + ' ' + parameters[1]
                         valid = True
 
+        # If command parameters are valid then run the command.
         if valid == True:
             logger.log('Running cmd "' + cmd_str + '"', job)
+
+            # Run the command and get results.
             result = self.run(cmd_str, False)
             cmd_output = result[0]
             cmd_error = result[1]
@@ -115,6 +128,7 @@ class Job:
 
             logger.log('Output cmd: "' + cmd_output.replace("\n", "|") + '"', job)
 
+            # If command terminated or completed successfully.
             if cmd_code != 0:
                 logger.log('Error in cmd with code: "' + str(cmd_code) + '"', job)
                 logger.log('Error in cmd: "' + cmd_error.replace("\n", "|") + '"', job)
@@ -122,6 +136,7 @@ class Job:
                 self.mark_job_error(job, cmd['subJobType'], logger)
                 return False
             else:
+                # If command is to be run on HPC then update hpc job id.
                 if cmd['subJobType'] == 'hpc' or cmd['subJobType'] == 'compile':
                     logger.log('Updating hpc jobId', job)
                     job['hpcJobId'] = int(cmd_output.replace("Submitted batch job", "").strip())
@@ -145,6 +160,7 @@ class Job:
         ind = 1
         commands = []
         
+        # Run bash commands until we find HPC job.
         if pre == True:
             for cmd in job['commands']:
                 if cmd['subJobType'] != 'hpc' and cmd['subJobType'] != 'compile':
@@ -167,12 +183,14 @@ class Job:
 
     def process_job(self, job, logger):
         cmd_obj = {}
-        
+
+        # Find HPC job.
         for cmd in job['commands']:
             if cmd['subJobType'] == 'hpc' or cmd['subJobType'] == 'compile':
                 cmd_obj = cmd
                 break
 
+        # Run HPC specfic job
         if 'subJobType' in cmd_obj:
             logger.log('Running hpc command', job)
             cmd_output = self.execute_cmd(job, cmd_obj, logger)
@@ -184,6 +202,7 @@ class Job:
         else:
             return True
 
+    # This function is used to generate
     def hpc_abort_job(self, job, logger):
         ret = 0
         cmd_obj = {}
@@ -196,6 +215,7 @@ class Job:
             logger.log('Returning job cancle: ' + str(result), job)
         return ret
 
+    # This function checks HPC job status using sControl
     def check_hpc_job_status(self, job, logger):
         ret = 0
         
@@ -235,6 +255,7 @@ class Job:
             logger.log('Returning job state: ' + str(ret), job)
         return ret
 
+    # This function schedule bash or HPC jobs as well as updates status of the job.
     def execute_job(self, job, logger):
         completed = False
 
