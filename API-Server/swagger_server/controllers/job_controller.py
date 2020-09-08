@@ -256,6 +256,16 @@ def delete_job(job_id, access_token):  # noqa: E501
         }
         return error_message, error_code
 
+    if not(str(job_id).isdigit()):
+        error_code = 405
+        error_message = {
+            "detail": 'Invalid input, please provide valid job_id.',
+            "status": error_code,
+            "title": "Invalid input",
+            "type": "about:blank"
+        }
+        return error_message, error_code
+
     job = Job()
     cox = job.connect()
     if cox != '':
@@ -450,7 +460,7 @@ def get_job_by_id(job_id, access_token):  # noqa: E501
         }
         return error_message, error_code
 
-    if not(job_id.isdigit()):
+    if not(str(job_id).isdigit()):
         error_code = 405
         error_message = {
             "detail": 'Invalid input, please provide valid job_id.',
@@ -556,7 +566,7 @@ def update_job(body, job_id, access_token):  # noqa: E501
         }
         return error_message, error_code
 
-    if not(job_id.isdigit()):
+    if not(str(job_id).isdigit()):
         error_code = 405
         error_message = {
             "detail": 'Invalid input, please provide valid job_id.',
@@ -720,7 +730,7 @@ def update_job_by_operation(job_id, operation, access_token):  # noqa: E501
         }
         return error_message, error_code
 
-    if not(job_id.isdigit()):
+    if not(str(job_id).isdigit()):
         error_code = 405
         error_message = {
             "detail": 'Invalid input, please provide valid job_id.',
