@@ -5,11 +5,11 @@ import time
 import sys
 
 # Checking if script is executed with necessary arguents.
-if len(sys.argv) != 2:
+if len(sys.argv) != 3:
     print ('Program requires these cli parameters: <host> <port>')
 else:
-    HOST = sys.argv[0]
-    PORT = sys.argv[1]
+    HOST = sys.argv[1]
+    PORT = sys.argv[2]
     BASE_URL = 'http://'+HOST+':'+PORT+'/Master-Thesis/HPC-RESTful/1.0.0'
     yaml_file = 'hpc.yml'
     attempt = 0
