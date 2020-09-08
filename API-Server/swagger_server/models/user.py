@@ -67,7 +67,7 @@ class User(Model):
         self._user_status = user_status
 
     def validate_user(self, token):
-        ret = False
+        ret = [False, 0]
         filepath = os.getcwd()+'/swagger_server/sample-data/tokens.data'
         with open(filepath) as fp:
             line = fp.readline()
@@ -75,7 +75,7 @@ class User(Model):
                 data = line.strip().split('|')
                 print (data)
                 if len(data) == 3 and data[2]==token:
-                    ret = True
+                    ret = [True, data[0]]
                     break
                 line = fp.readline()
         return ret

@@ -129,8 +129,8 @@ class Job(Model):
 
         return ret
 
-    def get_job(self, job_id):
-        sql = "SELECT * FROM `job` WHERE job_id=" + str(job_id)
+    def get_job(self, job_id, user_id):
+        sql = "SELECT * FROM `job` WHERE user_id=" + str(user_id) + " AND job_id=" + str(job_id)
         return self.select(sql)
 
     def insert_job(self, body):
@@ -183,20 +183,20 @@ class Job(Model):
         )
         return self.update(sql, val)
 
-    def get_jobs_cout(self, status):
+    def get_jobs_cout(self, status, user_id):
         if status != None:
             length = len(status)
             for i in range(length): 
                 status[i] = "'" + status[i] + "'"
             status = ','.join(status)
 
-        sql = "SELECT count(*) as t FROM `job`"
+        sql = "SELECT count(*) as t FROM `job` WHERE user_id=" + str(user_id)
         if status != None:
-            sql = sql + " WHERE `status` in (" + status + ");"
+            sql = sql + " AND `status` in (" + status + ");"
         
         return self.select(sql)
 
-    def get_jobs(self, job_status, page_number, page_length):
+    def get_jobs(self, job_status, page_number, page_length, user_id):
         '''
         if job_status != None:
             length = len(job_status)
@@ -205,10 +205,10 @@ class Job(Model):
             job_status = ','.join(job_status)
         '''
         job_status = ','.join(job_status)
-        sql = "SELECT * FROM `job`"
+        sql = "SELECT * FROM `job` WHERE user_id=" + str(user_id)
         if job_status != None:
-            sql = sql + " WHERE `status` in (" + job_status + ")"
-        sql = sql + " ORDER BY `created` DESC LIMIT " + str((page_number-1)*page_length) + ", " + str(page_length)
+            sql = sql + " AND `status` in (" + job_status + ")"
+        sql = sql + " ORDER BY `created` ASC LIMIT " + str((page_number-1)*page_length) + ", " + str(page_length)
 
         return self.select(sql)
 

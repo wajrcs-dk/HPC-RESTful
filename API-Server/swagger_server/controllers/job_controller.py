@@ -36,7 +36,8 @@ def add_job(body, access_token):  # noqa: E501
     """
 
     user = User()
-    if not(user.validate_user(access_token)):
+    user_info = user.validate_user(access_token)
+    if not(user_info[0]):
         error_code = 401
         error_message = {
             "detail": "You are not authorized to use this API.",
@@ -49,7 +50,17 @@ def add_job(body, access_token):  # noqa: E501
     now = time.strftime('%Y-%m-%d %H:%M:%S')
     jobMetaData = []
     commands = []
-    userId = 1
+    userId = user_info[1]
+
+    if not(userId.isdigit()):
+        error_code = 405
+        error_message = {
+            "detail": 'Invalid input, please provide valid userId.',
+            "status": error_code,
+            "title": "Invalid input",
+            "type": "about:blank"
+        }
+        return error_message, error_code
 
     if not('jobMetaData' in body and 'name' in body and 'commands' in body):
         error_code = 405
@@ -159,7 +170,7 @@ def add_job(body, access_token):  # noqa: E501
         return error_message, error_code
 
     try:
-        row = job.get_job(job_id)
+        row = job.get_job(job_id, userId)
     except Exception as e: # work on python 3.x
         error_code = 500
         error_message = {
@@ -223,13 +234,25 @@ def delete_job(job_id, access_token):  # noqa: E501
     """
 
     user = User()
-    if not(user.validate_user(access_token)):
+    user_info = user.validate_user(access_token)
+    if not(user_info[0]):
         error_code = 401
         error_message = {
           "detail": "You are not authorized to use this API.",
           "status": error_code,
           "title": "Unauthorized",
           "type": "about:blank"
+        }
+        return error_message, error_code
+
+    userId = user_info[1]
+    if not(userId.isdigit()):
+        error_code = 405
+        error_message = {
+            "detail": 'Invalid input, please provide valid userId.',
+            "status": error_code,
+            "title": "Invalid input",
+            "type": "about:blank"
         }
         return error_message, error_code
 
@@ -248,7 +271,7 @@ def delete_job(job_id, access_token):  # noqa: E501
     row = []
 
     try:
-        row = job.get_job(job_id)
+        row = job.get_job(job_id, userId)
     except Exception as e: # work on python 3.x
         error_code = 500
         error_message = {
@@ -314,13 +337,25 @@ def find_jobs_by_status(page_length, page_number, access_token, status=None):  #
     """
 
     user = User()
-    if not(user.validate_user(access_token)):
+    user_info = user.validate_user(access_token)
+    if not(user_info[0]):
         error_code = 401
         error_message = {
           "detail": "You are not authorized to use this API.",
           "status": error_code,
           "title": "Unauthorized",
           "type": "about:blank"
+        }
+        return error_message, error_code
+
+    userId = user_info[1]
+    if not(userId.isdigit()):
+        error_code = 405
+        error_message = {
+            "detail": 'Invalid input, please provide valid userId.',
+            "status": error_code,
+            "title": "Invalid input",
+            "type": "about:blank"
         }
         return error_message, error_code
 
@@ -339,8 +374,8 @@ def find_jobs_by_status(page_length, page_number, access_token, status=None):  #
     my_result_total = []
     my_result = []
     try:
-        my_result_total = job.get_jobs_cout(status)
-        my_result = job.get_jobs(status, page_number, page_length)
+        my_result_total = job.get_jobs_cout(status, userId)
+        my_result = job.get_jobs(status, page_number, page_length, userId)
         job.close()
     except Exception as e: # work on python 3.x
         error_code = 500
@@ -393,13 +428,35 @@ def get_job_by_id(job_id, access_token):  # noqa: E501
     """
 
     user = User()
-    if not(user.validate_user(access_token)):
+    user_info = user.validate_user(access_token)
+    if not(user_info[0]):
         error_code = 401
         error_message = {
           "detail": "You are not authorized to use this API.",
           "status": error_code,
           "title": "Unauthorized",
           "type": "about:blank"
+        }
+        return error_message, error_code
+
+    userId = user_info[1]
+    if not(userId.isdigit()):
+        error_code = 405
+        error_message = {
+            "detail": 'Invalid input, please provide valid userId.',
+            "status": error_code,
+            "title": "Invalid input",
+            "type": "about:blank"
+        }
+        return error_message, error_code
+
+    if not(job_id.isdigit()):
+        error_code = 405
+        error_message = {
+            "detail": 'Invalid input, please provide valid job_id.',
+            "status": error_code,
+            "title": "Invalid input",
+            "type": "about:blank"
         }
         return error_message, error_code
 
@@ -417,7 +474,7 @@ def get_job_by_id(job_id, access_token):  # noqa: E501
 
     row = []
     try:
-        row = job.get_job(job_id)
+        row = job.get_job(job_id, userId)
         job.close()
     except Exception as e: # work on python 3.x
         error_code = 500
@@ -477,13 +534,35 @@ def update_job(body, job_id, access_token):  # noqa: E501
     """
     
     user = User()
-    if not(user.validate_user(access_token)):
+    user_info = user.validate_user(access_token)
+    if not(user_info[0]):
         error_code = 401
         error_message = {
           "detail": "You are not authorized to use this API.",
           "status": error_code,
           "title": "Unauthorized",
           "type": "about:blank"
+        }
+        return error_message, error_code
+
+    userId = user_info[1]
+    if not(userId.isdigit()):
+        error_code = 405
+        error_message = {
+            "detail": 'Invalid input, please provide valid userId.',
+            "status": error_code,
+            "title": "Invalid input",
+            "type": "about:blank"
+        }
+        return error_message, error_code
+
+    if not(job_id.isdigit()):
+        error_code = 405
+        error_message = {
+            "detail": 'Invalid input, please provide valid job_id.',
+            "status": error_code,
+            "title": "Invalid input",
+            "type": "about:blank"
         }
         return error_message, error_code
 
@@ -505,7 +584,7 @@ def update_job(body, job_id, access_token):  # noqa: E501
         return error_message, error_code
 
     try:
-        row = job.get_job(job_id)
+        row = job.get_job(job_id, userId)
     except Exception as e: # work on python 3.x
         error_code = 500
         error_message = {
@@ -619,13 +698,35 @@ def update_job_by_operation(job_id, operation, access_token):  # noqa: E501
     """
 
     user = User()
-    if not(user.validate_user(access_token)):
+    user_info = user.validate_user(access_token)
+    if not(user_info[0]):
         error_code = 401
         error_message = {
           "detail": "You are not authorized to use this API.",
           "status": error_code,
           "title": "Unauthorized",
           "type": "about:blank"
+        }
+        return error_message, error_code
+
+    userId = user_info[1]
+    if not(userId.isdigit()):
+        error_code = 405
+        error_message = {
+            "detail": 'Invalid input, please provide valid userId.',
+            "status": error_code,
+            "title": "Invalid input",
+            "type": "about:blank"
+        }
+        return error_message, error_code
+
+    if not(job_id.isdigit()):
+        error_code = 405
+        error_message = {
+            "detail": 'Invalid input, please provide valid job_id.',
+            "status": error_code,
+            "title": "Invalid input",
+            "type": "about:blank"
         }
         return error_message, error_code
 
@@ -653,7 +754,7 @@ def update_job_by_operation(job_id, operation, access_token):  # noqa: E501
 
 
     try:
-        row = job.get_job(job_id)
+        row = job.get_job(job_id, userId)
     except Exception as e: # work on python 3.x
         error_code = 500
         error_message = {
