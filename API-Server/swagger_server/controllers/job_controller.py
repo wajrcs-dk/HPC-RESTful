@@ -4,6 +4,7 @@ import json
 import time
 
 from swagger_server.models.job import Job  # noqa: E501
+from swagger_server.models.user import User  # noqa: E501
 from swagger_server.models.job_metadata import JobMetadata  # noqa: E501
 from swagger_server.models.pagination_response import PaginationResponse  # noqa: E501
 from swagger_server import util
@@ -34,7 +35,8 @@ def add_job(body, access_token):  # noqa: E501
     :rtype: Job
     """
 
-    if access_token != 'N9TT-9G0A-B7FQ-RANC':
+    user = User()
+    if not(user.validate_user(access_token)):
         error_code = 401
         error_message = {
             "detail": "You are not authorized to use this API.",
@@ -220,7 +222,8 @@ def delete_job(job_id, access_token):  # noqa: E501
     :rtype: None
     """
 
-    if access_token != 'N9TT-9G0A-B7FQ-RANC':
+    user = User()
+    if not(user.validate_user(access_token)):
         error_code = 401
         error_message = {
           "detail": "You are not authorized to use this API.",
@@ -310,7 +313,8 @@ def find_jobs_by_status(page_length, page_number, access_token, status=None):  #
     :rtype: object
     """
 
-    if access_token != 'N9TT-9G0A-B7FQ-RANC':
+    user = User()
+    if not(user.validate_user(access_token)):
         error_code = 401
         error_message = {
           "detail": "You are not authorized to use this API.",
@@ -388,7 +392,8 @@ def get_job_by_id(job_id, access_token):  # noqa: E501
     :rtype: job
     """
 
-    if access_token != 'N9TT-9G0A-B7FQ-RANC':
+    user = User()
+    if not(user.validate_user(access_token)):
         error_code = 401
         error_message = {
           "detail": "You are not authorized to use this API.",
@@ -471,7 +476,8 @@ def update_job(body, job_id, access_token):  # noqa: E501
     :rtype: job
     """
     
-    if access_token != 'N9TT-9G0A-B7FQ-RANC':
+    user = User()
+    if not(user.validate_user(access_token)):
         error_code = 401
         error_message = {
           "detail": "You are not authorized to use this API.",
@@ -612,7 +618,8 @@ def update_job_by_operation(job_id, operation, access_token):  # noqa: E501
     :rtype: job
     """
 
-    if access_token != 'N9TT-9G0A-B7FQ-RANC':
+    user = User()
+    if not(user.validate_user(access_token)):
         error_code = 401
         error_message = {
           "detail": "You are not authorized to use this API.",
@@ -634,6 +641,17 @@ def update_job_by_operation(job_id, operation, access_token):  # noqa: E501
         }
         return error_message, error_code
 
+    if operation != 'queue' or operation != 'abort':
+        error_code = 405
+        error_message = {
+            "detail": 'Operation must be "abort"',
+            "status": error_code,
+            "title": "Invalid input",
+            "type": "about:blank"
+        }
+        return error_message, error_code
+
+
     try:
         row = job.get_job(job_id)
     except Exception as e: # work on python 3.x
@@ -648,39 +666,49 @@ def update_job_by_operation(job_id, operation, access_token):  # noqa: E501
 
     if len(row) == 1:
 
-        try:
-            job.update_job_operation(job_id, operation)
-            job.close()
-        except Exception as e: # work on python 3.x
-            error_code = 500
+        if job.operate_job_status(status, operation):
+            try:
+                job.update_job_operation(job_id, operation)
+                job.close()
+            except Exception as e: # work on python 3.x
+                error_code = 500
+                error_message = {
+                    "detail": 'Error in updating job into database: '+str(e),
+                    "status": error_code,
+                    "title": "Internal Server Error",
+                    "type": "about:blank"
+                }
+                return error_message, error_code
+
+            row = row[0]
+            my_result = {
+                "jobId": row[0],
+                "hpcJobId": row[1],
+                "operation": operation,
+                "userId": row[3],
+                "name": row[4],
+                "commands": json.loads(row[5]),
+                "jobMetaData": json.loads(row[6]),
+                "created": row[7],
+                "updated": row[8],
+                "result": row[9],
+                "log": row[10],
+                "status": row[11]
+            }
+
+            if connexion.request.is_json:
+                return my_result
+            else:
+                return my_result
+        else:
+            error_code = 409
             error_message = {
-                "detail": 'Error in updating job into database: '+str(e),
-                "status": error_code,
-                "title": "Internal Server Error",
-                "type": "about:blank"
+              "detail": "job with jobId " + str(job_id) + " cannot be aborted because status needs to be hpc_queued or hpc_in_progress.",
+              "status": error_code,
+              "title": "job cannot deleted",
+              "type": "about:blank"
             }
             return error_message, error_code
-
-        row = row[0]
-        my_result = {
-            "jobId": row[0],
-            "hpcJobId": row[1],
-            "operation": operation,
-            "userId": row[3],
-            "name": row[4],
-            "commands": json.loads(row[5]),
-            "jobMetaData": json.loads(row[6]),
-            "created": row[7],
-            "updated": row[8],
-            "result": row[9],
-            "log": row[10],
-            "status": row[11]
-        }
-
-        if connexion.request.is_json:
-            return my_result
-        else:
-            return my_result
     else:
         error_code = 404
         error_message = {

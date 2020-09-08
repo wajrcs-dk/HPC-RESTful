@@ -420,6 +420,14 @@ https://www.gwdg.de/server-services/gwdg-cloud-server
 
 https://info.gwdg.de/docs/doku.php?id=en:services:application_services:high_performance_computing:connect_with_ssh 
 
+wajrcs@wajrcs-Inspiron-5547:~$ nslookup gwdu102.gwdg.de 
+Server:   127.0.0.53
+Address:  127.0.0.53#53
+Non-authoritative answer:
+Name: gwdu102.gwdg.de
+Address: 134.76.8.102
+
+
 Archive Job
 
 {
@@ -585,11 +593,11 @@ service supervisor start
 docker exec -it ebaf78f0c985 bash
 vi /etc/hosts
 docker-compose start
-
+docker exec -it slurmctld bash
 
 ------------------
 
-docker-compose start
+docker-compose stop
 docker stop ebaf78f0c985
 docker stop caadf82c5fe8
 docker stop e01dafdb6e06

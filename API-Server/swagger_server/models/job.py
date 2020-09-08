@@ -212,6 +212,17 @@ class Job(Model):
 
         return self.select(sql)
 
+    def operate_job_status(self, status, operation):
+        ret = False
+        
+        if operation == 'queue':
+            ret = True
+        else:
+            if status=='hpc_queued' or status=='hpc_in_progress':
+                ret = True
+
+        return ret
+
     def delete_job_status(self, status):
         ret = False
         

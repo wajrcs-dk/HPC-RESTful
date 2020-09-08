@@ -19,7 +19,17 @@ class Job:
 
     # This function updates a job via RESTful API server.
     def update_job(self, job_id, data):
-        return Api.put(self.URL + 'job/' + str(job_id) + '?accessToken='+ self.access_token, data)
+        return Api.put(self.URL + 'job/' + str(job_id) + '?accessToken=' + self.access_token, data)
+
+    # This function apply operation on a job via RESTful API server.
+    def operation_job(self, job_id, operation):
+        return Api.put(self.URL + 'job/updateByOperation/' + str(job_id) + '?operation=' + operation + '&accessToken=' + self.access_token, {})
+
+    # This function changes operation of the job.
+    def operation_job_status(self, job, operation, logger):
+        logger.log('Updating operation', job)
+        r = self.operation_job(job['jobId'], operation)
+        logger.log('Updated operation', job)
 
     # This function updates job log via RESTful API server.
     def update_job_logs(self, job, log):
@@ -277,8 +287,9 @@ class Job:
                     self.update_job_status(job, logger)
         
         if (job['status'] == 'hpc_queued'):
+            ret = self.check_hpc_job_status(job, logger)
+            
             if job['operation'] == 'queue':
-                ret = self.check_hpc_job_status(job, logger)
                 if ret == 1:
                     job['status'] = 'hpc_in_progress'
                     self.update_job_status(job, logger)
@@ -293,11 +304,22 @@ class Job:
                     self.update_job_status(job, logger)
             
             if job['operation'] == 'abort':
-                hpc_abort_job(job, logger)
-        
+                if ret == 1:
+                    if self.hpc_abort_job(job, logger)==1:
+                        job['status'] = 'hpc_aborted'
+                        self.update_job_status(job, logger)
+                    else:
+                        job['status'] = 'hpc_failed'
+                        self.update_job_status(job, logger)
+                else:
+                    job['operation'] = 'queue';
+                    self.operation_job_status(job, 'queue', logger)
+
+
         if (job['status'] == 'hpc_in_progress'):
+            ret = self.check_hpc_job_status(job, logger)
+            
             if job['operation'] == 'queue':
-                ret = self.check_hpc_job_status(job, logger)
                 if ret == 2:
                     job['status'] = 'completed'
                     self.update_job_status(job, logger)
@@ -317,6 +339,15 @@ class Job:
                     self.update_job_status(job, logger)
             
             if job['operation'] == 'abort':
-                hpc_abort_job(job, logger)
+                if ret == 1:
+                    if self.hpc_abort_job(job, logger)==1:
+                        job['status'] = 'hpc_aborted'
+                        self.update_job_status(job, logger)
+                    else:
+                        job['status'] = 'hpc_failed'
+                        self.update_job_status(job, logger)
+                else:
+                    job['operation'] = 'queue';
+                    self.operation_job_status(job, 'queue', logger)
 
         return completed
