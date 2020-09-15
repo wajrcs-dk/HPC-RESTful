@@ -2,6 +2,37 @@ import requests
 
 class Api:
 
+    def getFile(url, file):
+        try:
+            r = requests.get(url, allow_redirects=True)
+            open(file, 'wb').write(r.content)
+            return True
+        except Exception as e: # work on python 3.x
+            error_message = {
+                "detail": 'HTTP request exception: '+str(e),
+                "status": 500,
+                "title": "HTTP request exception",
+                "type": "about:blank"
+            }
+            print(error_message['detail'])
+            return error_message
+
+    def uploadFile(url, file):
+        try:
+            files = {'fileName': open(file,'rb')}
+            headers = {'Content-type': 'multipart/form-data', 'Accept': 'text/plain'}
+            r = requests.post(url, files=files, headers=headers)
+            return r.json()
+        except Exception as e: # work on python 3.x
+            error_message = {
+                "detail": 'HTTP request exception: '+str(e),
+                "status": 500,
+                "title": "HTTP request exception",
+                "type": "about:blank"
+            }
+            print(error_message['detail'])
+            return error_message
+
     def get(url, params):
         try:
             # sending get request and saving the response as response object 

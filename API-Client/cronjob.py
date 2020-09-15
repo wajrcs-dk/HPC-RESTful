@@ -75,13 +75,29 @@ else:
                     for job_db in jobs['jobs']:
                         print(job_db)
                         loggerObj.log('Processing job', job_db)
+                        download_file = True
                         
                         # If the temporary location is not created than try to create it.
                         if not os.path.exists(BASE_PATH + str(job_db['jobId']) + '/'):
                             os.makedirs(BASE_PATH + str(job_db['jobId']) + '/')
+                            jobMetaData = job_db['jobMetaData']
+                            # Download
+                            if 'hasFile' in jobMetaData and jobMetaData['hasFile']==True:
+                                download_file = False
+                                if 'file 'in jobMetaData:
+                                    loggerObj.log('Downloading job file', job_db)
+                                    file = BASE_PATH + str(job_db['jobId']) + '/' + jobMetaData['file']
+                                    if jobObj.getFile(job_db['jobId'], file, 'input_file'):
+                                        download_file = True
+                                        loggerObj.log('Downloaded job file', job_db)
+                                    else:
+                                        loggerObj.log('Error in downloading job file', job_db)
+                                else:
+                                    loggerObj.log('No job file', job_db)
 
-                        # Process job here.
-                        completed = jobObj.execute_job(job_db, loggerObj)
+                        if download_file == True:
+                            # Process job here.
+                            completed = jobObj.execute_job(job_db, loggerObj)
 
                         # If job is completed or failed than remove temporary location. 
                         if job_db['status'] == 'hpc_aborted' or job_db['status'] == 'cronjob_failed' or job_db['status'] == 'hpc_failed' or job_db['status'] == 'completed':

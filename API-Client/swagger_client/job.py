@@ -13,6 +13,12 @@ class Job:
         self.URL = URL
         self.access_token = access_token
 
+    def getFile(self, job_id, file, file_type):
+        return Api.getFile(self.URL + 'file/' + str(job_id) + '/getFile?fileType='+file_type+'&accessToken=' + self.access_token, file)
+
+    def uploadFile(self, filename, file):
+        return Api.uploadFile(self.URL + 'file/uploadFile?filename='+filename+'&accessToken=' + self.access_token, file)
+
     # This function fetches incomplete jobs from RESTful API server.
     def find_jobs_by_status(self, params):
         return Api.get(self.URL + 'job/findJobsByStatus', params)
@@ -321,16 +327,32 @@ class Job:
             
             if job['operation'] == 'queue':
                 if ret == 2:
-                    job['status'] = 'completed'
-                    self.update_job_status(job, logger)
-
                     logger.log('Running post jobs', job)
                     ret = self.execute_pre_post_jobs(job, False, logger)
                     
                     if ret != False:
                         logger.log('Completed post jobs', job)
+
+                        # Upload results
+                        jobMetaData = job['jobMetaData']
+                        if 'output' in jobMetaData and jobMetaData['output'] != '':
+                            logger.log('Uploading output file', job)
+                            head, tail = os.path.split(jobMetaData['output'])
+                            res = self.uploadFile(tail, jobMetaData['output'])
+                            if 'uploaded_file' in res:
+                                now = time.strftime('%Y-%m-%d %H:%M:%S')
+                                job['updated'] = now
+                                job['jobMetaData']['output_file'] = res['uploaded_file']
+                                self.update_job(job['jobId'], job)
+                                logger.log('Uploaded file and updated job', job)
+                            else:
+                                logger.log('Error in uploading output file', job)
+                
+                        job['status'] = 'completed'
+                        self.update_job_status(job, logger)
                         completed = True
                         logger.log('Completed finally', job)
+
                 if ret == 3:
                     job['status'] = 'hpc_failed'
                     self.update_job_status(job, logger)

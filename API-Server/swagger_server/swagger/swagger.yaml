@@ -24,6 +24,11 @@ tags:
   externalDocs:
     description: Find out more
     url: http://swagger.io
+- name: file
+  description: Managing files
+  externalDocs:
+    description: Find out more
+    url: http://swagger.io
 - name: user
   description: Operations about users
   externalDocs:
@@ -89,10 +94,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                allOf:
-                - $ref: '#/components/schemas/PaginationResponse'
-                x-content-type: application/json
+                $ref: '#/components/schemas/inline_response_200'
             application/xml:
               schema:
                 type: array
@@ -358,6 +360,90 @@ paths:
         "400":
           description: Invalid username/password supplied
       x-openapi-router-controller: swagger_server.controllers.user_controller
+  /file/uploadFile:
+    post:
+      tags:
+      - file
+      summary: uploads a file
+      operationId: upload_file
+      parameters:
+      - name: filename
+        in: query
+        description: Name of the file
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: accessToken
+        in: query
+        description: Access token
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/body'
+      responses:
+        "200":
+          description: Successful operation
+        "400":
+          description: Invalid name supplied
+        "401":
+          description: Unauthorized
+      x-openapi-router-controller: swagger_server.controllers.file_controller
+  /file/{jobId}/getFile:
+    get:
+      tags:
+      - file
+      summary: downloads a file
+      operationId: get_file
+      parameters:
+      - name: jobId
+        in: path
+        description: name that need to be updated
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: fileType
+        in: query
+        description: Input or output file
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: accessToken
+        in: query
+        description: Access token
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+                x-content-type: application/octet-stream
+        "400":
+          description: Invalid ID supplied
+        "401":
+          description: Unauthorized
+        "404":
+          description: Job not found
+      x-openapi-router-controller: swagger_server.controllers.file_controller
 components:
   schemas:
     commands:
@@ -528,6 +614,16 @@ components:
         status: new
       xml:
         name: Job
+    inline_response_200:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/PaginationResponse'
+    body:
+      type: object
+      properties:
+        fileName:
+          type: string
+          format: binary
   requestBodies:
     Job:
       description: Job object that needs to be added
