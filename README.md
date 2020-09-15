@@ -602,3 +602,49 @@ docker stop ebaf78f0c985
 docker stop caadf82c5fe8
 docker stop e01dafdb6e06
 docker stop 767cc028db4c
+
+
+waqar3263550sc4
+
+WAJ3263550gg
+
+waqar.alamgir@gast.gwdg.de
+
+
+141.5.101.84
+
+
+https://hub.docker.com/r/wajrcs/pyzip/tags
+https://www.edureka.co/community/17112/how-do-i-copy-a-file-from-docker-container-to-host
+
+
+python3 cronjob.py 141.5.101.84 8081 Master-Thesis/HPC-RESTful/1.0.0/ /usr/users/walamgi/data/jobs/ 5 10
+
+
+Issues:
+sudo
+zip
+module load python/3.8.2
+
+
+module load python/3.8.2
+git clone https://gitlab.gwdg.de/waqar-hpc-master-thesis/hpc-restful-core.git
+cd API-Client/
+python3 cronjob.py 141.5.101.84 8081 Master-Thesis/HPC-RESTful/1.0.0/ /usr/users/walamgi/data/jobs/ 5 10
+
+module load python/3.8.2
+pip3 install pyyaml
+git clone https://gitlab.gwdg.de/waqar-hpc-master-thesis/hpc-hellomake-example.git
+cd hpc-hellomake-example/
+python3 hpc.py 141.5.101.84 8081
+
+.
+
+
+
+requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
