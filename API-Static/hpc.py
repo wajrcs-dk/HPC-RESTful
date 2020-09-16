@@ -21,7 +21,7 @@ else:
 
         get_url = BASE_URL + '/job/{jobId}?accessToken=' + hpc_job['accessToken']
         post_url = BASE_URL + '/job?accessToken=' + hpc_job['accessToken']
-        post_file_url = BASE_URL + '/file/uploadFile?filename=s.md&accessToken=' + hpc_job['accessToken']
+        post_file_url = BASE_URL + '/file/uploadFile?filename='+hpc_job['jobMetaData']['file']+'&accessToken=' + hpc_job['accessToken']
         get_file_url = BASE_URL + '/file/{jobId}/getFile?fileType=output_file&accessToken=' + hpc_job['accessToken']
 
         # Don't need to post accessToken
@@ -31,15 +31,14 @@ else:
             print ('Uploading file.')
             # Posting request
             files = {'fileName': open(sys.argv[3],'rb')}
-            headers = {'Content-type': 'multipart/form-data', 'Accept': 'text/plain'}
-            r = requests.post(post_file_url, files=files, headers=headers)
+            r = requests.post(post_file_url, files=files)
             result = r.json()
             print(result)
             hpc_job['jobMetaData']['input_file'] = result['uploaded_file']
             print ('Uploading file completed.')
 
         # Posting request
-        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+        headers = {'Content-type': 'application/json', 'accept': 'text/plain'}
         r = requests.post(post_url, data=json.dumps(hpc_job), headers=headers)
         result = r.json()
         print(result)
