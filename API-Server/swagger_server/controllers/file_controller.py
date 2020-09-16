@@ -51,6 +51,7 @@ def get_file(job_id, file_type, access_token):  # noqa: E501
     row = [[0,1,2,3,4,5,{'filename':'s.md'}]]
     """
     row = []
+    job = Job()
 
     try:
         row = job.get_job(job_id, userId)
