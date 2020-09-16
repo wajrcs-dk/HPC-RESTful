@@ -20,8 +20,7 @@ class Api:
     def uploadFile(url, file):
         try:
             files = {'fileName': open(file,'rb')}
-            headers = {'Content-type': 'multipart/form-data', 'Accept': 'text/plain'}
-            r = requests.post(url, files=files, headers=headers)
+            r = requests.post(url, files=files)
             return r.json()
         except Exception as e: # work on python 3.x
             error_message = {
