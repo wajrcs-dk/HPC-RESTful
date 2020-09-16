@@ -34,8 +34,8 @@ else:
             headers = {'Content-type': 'multipart/form-data', 'Accept': 'text/plain'}
             r = requests.post(post_file_url, files=files, headers=headers)
             result = r.json()
-            hpc_job['jobMetaData']['input_file'] = result['uploaded_file']
             print(result)
+            hpc_job['jobMetaData']['input_file'] = result['uploaded_file']
             print ('Uploading file completed.')
 
         # Posting request
