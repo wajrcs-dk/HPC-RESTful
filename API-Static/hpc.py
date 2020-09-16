@@ -3,6 +3,7 @@ import yaml
 import json
 import time
 import sys
+import os
 
 # Checking if script is executed with necessary arguents.
 if len(sys.argv) < 3:
