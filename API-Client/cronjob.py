@@ -87,7 +87,7 @@ else:
                             if 'hasFile' in jobMetaData and jobMetaData['hasFile']==True:
                                 download_file = False
 
-                                if 'file 'in jobMetaData:
+                                if jobMetaData['file']:
                                     loggerObj.log('Downloading job file', job_db)
                                     file = BASE_PATH + str(job_db['jobId']) + '/' + jobMetaData['file']
                                     if jobObj.getFile(job_db['jobId'], file, 'input_file'):
