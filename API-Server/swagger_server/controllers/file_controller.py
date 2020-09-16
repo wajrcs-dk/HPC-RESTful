@@ -52,6 +52,16 @@ def get_file(job_id, file_type, access_token):  # noqa: E501
     """
     row = []
     job = Job()
+    cox = job.connect()
+    if cox != '':
+        error_code = 500
+        error_message = {
+            "detail": cox,
+            "status": error_code,
+            "title": "Internal Server Error",
+            "type": "about:blank"
+        }
+        return error_message, error_code
 
     try:
         row = job.get_job(job_id, userId)
@@ -65,6 +75,8 @@ def get_file(job_id, file_type, access_token):  # noqa: E501
         }
         return error_message, error_code
     
+    job.close()
+
     if len(row) == 1:
         row = row[0]
         jobMetaData = json.loads(row[6])
