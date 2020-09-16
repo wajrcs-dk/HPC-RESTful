@@ -82,9 +82,11 @@ else:
                             os.makedirs(BASE_PATH + str(job_db['jobId']) + '/')
                             jobMetaData = job_db['jobMetaData']
                             print (jobMetaData)
+                            print (jobMetaData['file'])
                             # Download
                             if 'hasFile' in jobMetaData and jobMetaData['hasFile']==True:
                                 download_file = False
+
                                 if 'file 'in jobMetaData:
                                     loggerObj.log('Downloading job file', job_db)
                                     file = BASE_PATH + str(job_db['jobId']) + '/' + jobMetaData['file']
