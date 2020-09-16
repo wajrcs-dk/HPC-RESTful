@@ -338,7 +338,7 @@ class Job:
                         if 'output' in jobMetaData and jobMetaData['output'] != '':
                             logger.log('Uploading output file', job)
                             head, tail = os.path.split(jobMetaData['output'])
-                            res = self.uploadFile(tail, jobMetaData['output'])
+                            res = self.uploadFile(tail, jobMetaData['output'].strip())
                             if 'uploaded_file' in res:
                                 now = time.strftime('%Y-%m-%d %H:%M:%S')
                                 job['updated'] = now
