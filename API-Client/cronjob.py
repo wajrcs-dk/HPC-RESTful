@@ -81,6 +81,7 @@ else:
                         if not os.path.exists(BASE_PATH + str(job_db['jobId']) + '/'):
                             os.makedirs(BASE_PATH + str(job_db['jobId']) + '/')
                             jobMetaData = job_db['jobMetaData']
+                            print (jobMetaData)
                             # Download
                             if 'hasFile' in jobMetaData and jobMetaData['hasFile']==True:
                                 download_file = False
