@@ -56,8 +56,8 @@ else:
                 if 'jobId' in job_db:
                     print ("Job [" + str(job_db['jobId']) + "][" + job_db['status'] + "] Try " + str(attempt))
                     if job_db['status'] == 'completed':
-                        if job_db['jobMetaData']['ouput'] != '':
-                            head, tail = os.path.split(job_db['jobMetaData']['ouput'])
+                        if job_db['jobMetaData']['output'] != '':
+                            head, tail = os.path.split(job_db['jobMetaData']['output'])
                             r = requests.get(get_file_url, allow_redirects=True)
                             open(tail, 'wb').write(r.content)
                         break
