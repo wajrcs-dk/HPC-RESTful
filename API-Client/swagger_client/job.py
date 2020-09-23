@@ -12,6 +12,10 @@ class Job:
     def __init__(self, URL, access_token):
         self.URL = URL
         self.access_token = access_token
+        config = {}
+        with open('swagger_client/config.json') as json_file:
+            config = json.load(json_file)
+        self.config = config
 
     def getFile(self, job_id, file, file_type):
         return Api.getFile(self.URL + 'file/' + str(job_id) + '/getFile?fileType='+file_type+'&accessToken=' + self.access_token, file)
@@ -78,12 +82,14 @@ class Job:
 
         # HPC scancel command.
         if cmd['subJobType'] == 'hpc_abort':
-            cmd_str = 'scancel ' + cmd['parameters']
+            cmd_str = self.config['hpc_abort']
+            cmd_str = cmd_str.replace('{hpcjobid}', cmd['parameters'])
             valid = True
 
         # HPC scontrol command.
         if cmd['subJobType'] == 'hpc_status':
-            cmd_str = 'scontrol show jobid ' + cmd['parameters']
+            cmd_str = self.config['hpc_status']
+            cmd_str = cmd_str.replace('{hpcjobid}', cmd['parameters'])
             valid = True
 
         # HPC sbatch command.
@@ -91,14 +97,16 @@ class Job:
             valid_reason = 'Hpc job: Invalid script'
             filename, file_extension = os.path.splitext(cmd['parameters'])
             if os.path.isfile(cmd['parameters']) and file_extension == '.sh':
-                cmd_str = 'sbatch ' + cmd['parameters']
+                cmd_str = self.config['hpc']
+                cmd_str = cmd_str.replace('{bashfile}', cmd['parameters'])
                 valid = True
 
         # Compile command using sbatch.
         if cmd['subJobType'] == 'compile':
             valid_reason = 'Compile job: Invalid file'
             if os.path.isfile(cmd['parameters']):
-                cmd_str = 'sbatch --wrap="make -C ' + os.path.dirname(cmd['parameters']) + '"'
+                cmd_str = self.config['compile']
+                cmd_str = cmd_str.replace('{makefile}', os.path.dirname(cmd['parameters']))
                 valid = True
 
         # Archive command using zip.
@@ -107,10 +115,12 @@ class Job:
             parameters = cmd['parameters'].split('|')
             if len(parameters) == 2:
                 if os.path.isdir(os.path.dirname(parameters[0])) and os.path.isdir(parameters[1]):
-                    cmd_str = 'cd ' + parameters[1] + ' && zip -FSr ' + parameters[0] + ' ./'
+                    cmd_str = 'cd ' + parameters[1] + ' && ' + self.config['archive']
+                    cmd_str = cmd_str.replace('{destination}', parameters[0]).replace('{source}', './')
                     valid = True
                 if os.path.isdir(os.path.dirname(parameters[0])) and os.path.isfile(parameters[1]):
-                    cmd_str = 'zip -FSr ' + parameters[0] + ' ' + parameters[1]
+                    cmd_str = self.config['archive']
+                    cmd_str = cmd_str.replace('{destination}', parameters[0]).replace('{source}', parameters[1])
                     valid = True
 
         # Unarchive command using unzip.
@@ -119,7 +129,8 @@ class Job:
             parameters = cmd['parameters'].split('|')
             if len(parameters) == 2:
                 if os.path.isfile(parameters[0]) and os.path.isdir(parameters[1]):
-                    cmd_str = 'unzip ' + parameters[0] + ' -d ' + parameters[1]
+                    cmd_str = self.config['unarchive']
+                    cmd_str = cmd_str.replace('{destination}', parameters[1]).replace('{source}', parameters[0])
                     valid = True
         
         # Copy command using cp.
@@ -129,7 +140,8 @@ class Job:
             if len(parameters) == 2:
                 if os.path.isfile(parameters[0]) or os.path.isdir(parameters[0]):
                     if os.path.isfile(parameters[1]) or os.path.isdir(parameters[1]):
-                        cmd_str = 'cp ' + parameters[0] + ' ' + parameters[1]
+                        cmd_str = self.config['copy']
+                        cmd_str = cmd_str.replace('{destination}', parameters[1]).replace('{source}', parameters[0])
                         valid = True
 
         # If command parameters are valid then run the command.

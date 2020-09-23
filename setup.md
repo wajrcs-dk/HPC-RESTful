@@ -1,6 +1,10 @@
 
 # HPC-RESTful
 
+https://slurm.schedmd.com/publications.html 
+
+https://www.youtube.com/c/schedmdslurm/ 
+
 https://dev.to/hmajid2301/implementing-a-simple-rest-api-using-openapi-flask-connexions-28kk
 
 https://github.com/zalando/connexion/commit/518d1dd3d711782aa56eb406b7fb346443d94271
@@ -604,16 +608,14 @@ docker stop caadf82c5fe8
 docker stop e01dafdb6e06
 docker stop 767cc028db4c
 
-
 waqar3263550sc4
 
+waqar.alamgir@gast.gwdg.de
 WAJ3263550gg
 
-waqar.alamgir@gast.gwdg.de
-
-
-141.5.101.84
-
+Cloud Server: 141.5.101.84
+Slurm Cluster: 134.76.8.102
+GitLab Runner: 141.5.106.75
 
 https://hub.docker.com/r/wajrcs/pyzip/tags
 https://www.edureka.co/community/17112/how-do-i-copy-a-file-from-docker-container-to-host
@@ -649,3 +651,7 @@ requestBody:
             schema:
               type: string
               format: binary
+
+
+
+              sudo docker build -t wajrcs/pyzip:v4.0 .
