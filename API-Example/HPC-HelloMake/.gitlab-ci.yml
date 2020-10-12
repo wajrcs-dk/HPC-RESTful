@@ -1,0 +1,15 @@
+image: wajrcs/pyzip:latest
+
+stages:
+  - compile
+
+compile:
+  stage: compile
+  script:
+    - zip -r CodeInput.zip *
+    - cp /usr/src/app/hpc.py ./
+    - python3 hpc.py 141.5.101.84 8081 CodeInput.zip
+  artifacts:
+    paths:
+      - CodeInput.zip
+      - CodeOutput.zip

@@ -1,0 +1,14 @@
+name: Compile Hello Make
+commands:
+  - subJobType: unarchive
+    parameters: /usr/users/walamgi/data/jobs/{jobId}/CodeInput.zip|/usr/users/walamgi/data/jobs/{jobId}/
+  - subJobType: compile
+    parameters: /usr/users/walamgi/data/jobs/{jobId}/Makefile
+  - subJobType: archive
+    parameters: /usr/users/walamgi/data/output/CodeOutput.zip|/usr/users/walamgi/data/jobs/{jobId}/
+jobMetaData:
+  error: 
+  output: /usr/users/walamgi/data/output/CodeOutput.zip
+  hasFile: true
+  file: CodeInput.zip
+accessToken: N9TT-9G0A-B7FQ-RANC
