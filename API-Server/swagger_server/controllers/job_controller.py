@@ -93,7 +93,18 @@ def add_job(body, access_token):  # noqa: E501
         return error_message, error_code
 
     hpc_cout = 0
+    sub_job_types = ['hpc', 'archive', 'unarchive', 'copy', 'compile', 'shell']
     for cmd in body['commands']:
+        if not(cmd['subJobType'] in sub_job_types):
+            error_code = 405
+            error_message = {
+                "detail": 'Invalid input, this sub job type is not supported '+cmd['subJobType'],
+                "status": error_code,
+                "title": "Invalid input",
+                "type": "about:blank"
+            }
+            return error_message, error_code
+
         if not('subJobType' in cmd and 'parameters' in cmd):
             error_code = 405
             error_message = {

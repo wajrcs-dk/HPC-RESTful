@@ -2,6 +2,7 @@
 	"hpc_abort":"scancel {hpcjobid}",
 	"hpc_status":"scontrol show jobid {hpcjobid}",
 	"hpc":"sbatch {bashfile}",
+	"shell":"{shellfile}",
 	"compile":"sbatch --wrap=\"make -C {makefile}\"",
 	"archive":"zip -FSr {destination} {source}",
 	"unarchive":"unzip {source} -d {destination}",

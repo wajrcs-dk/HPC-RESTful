@@ -92,6 +92,15 @@ class Job:
             cmd_str = cmd_str.replace('{hpcjobid}', cmd['parameters'])
             valid = True
 
+        # Shell command.
+        if cmd['subJobType'] == 'shell':
+            valid_reason = 'Shell job: Invalid script path'
+            filename, file_extension = os.path.splitext(cmd['parameters'])
+            if os.path.isfile(cmd['parameters']):
+                cmd_str = self.config['shell']
+                cmd_str = cmd_str.replace('{shellfile}', cmd['parameters'])
+                valid = True
+
         # HPC sbatch command.
         if cmd['subJobType'] == 'hpc':
             valid_reason = 'Hpc job: Invalid script'

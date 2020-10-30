@@ -536,6 +536,7 @@ components:
           - unarchive
           - copy
           - compile
+          - shell
         parameters:
           type: string
           description: Job parameters
