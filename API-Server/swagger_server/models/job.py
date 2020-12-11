@@ -112,6 +112,9 @@ class Job(Model):
         if old_status=='cronjob_in_progress' and new_status=='cronjob_failed':
             ret = True
 
+        if old_status=='cronjob_in_progress' and new_status=='completed':
+            ret = True
+
         if old_status=='hpc_queued' and new_status=='hpc_in_progress':
             ret = True
 

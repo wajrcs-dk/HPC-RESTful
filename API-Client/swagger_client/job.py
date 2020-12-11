@@ -56,6 +56,8 @@ class Job:
         job['created'] = job['created'].replace('T', ' ').replace('Z', '')
         job['updated'] = now
         r = self.update_job(job['jobId'], job)
+        print ('update_job_status')
+        print (r)
         logger.log('Updated status', job)
 
     # This function marks job status as failed via RESTful API server.

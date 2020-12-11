@@ -130,6 +130,13 @@ curl -X PUT -H 'accept: application/json' -H 'Content-Type: application/json' -i
 Meeting-ID: 988 8024 9168
 Passwort: 940979
 
+https://meet.gwdg.de/b/chr-gjm-pvm-ztz
+code: 803423
+
+2.512,08 -  2.703,72 - 2.823,44 - 2.905,55
+
+2.512,08 -  2.703,72 - 2.823,44 - 2.905,55
+
 My: 867826
 
 + code didnt work
